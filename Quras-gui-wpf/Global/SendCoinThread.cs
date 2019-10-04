@@ -144,7 +144,7 @@ namespace Quras_gui_wpf.Global
                 info.vpub_old = new Fixed8(0);
                 info.vpub_new = new Fixed8(0);
 
-                JSOutput jsOut = new JSOutput(Wallet.ToPaymentAddress(toAddress), amount, (UInt256)asset.AssetId);
+                JSOutput jsOut = new JSOutput(Wallet.ToPaymentAddress(toAddress), amount, fee, (UInt256)asset.AssetId);
 
                 info.vjsout.Add(jsOut);
                 info.vpub_old += amount;
@@ -223,6 +223,7 @@ namespace Quras_gui_wpf.Global
                 TransactionOutput outPut = new TransactionOutput();
                 outPut.ScriptHash = Wallet.ToScriptHash(toAddress);
                 outPut.Value = amount;
+                outPut.Fee = fee;
                 outPut.AssetId = (UInt256)asset.AssetId;
                 tx.Outputs = new TransactionOutput[1];
                 tx.Outputs[0] = outPut;
@@ -603,7 +604,7 @@ namespace Quras_gui_wpf.Global
                 info.vpub_old = Fixed8.Zero;
                 info.vpub_new = Fixed8.Zero;
 
-                JSOutput jsOut = new JSOutput(Wallet.ToPaymentAddress(toAddress), amount, (UInt256)asset.AssetId);
+                JSOutput jsOut = new JSOutput(Wallet.ToPaymentAddress(toAddress), amount, fee, (UInt256)asset.AssetId);
 
                 info.vjsout.Add(jsOut);
 

@@ -53,7 +53,7 @@ namespace Pure.Core.Anonoymous
         public static extern void Snark_Jsoutput_Delete(IntPtr pJsOutput);
 
         [DllImport("./crypto/Quras_snarks.dll", EntryPoint = "Jsoutput_Init")]
-        public static extern void Snark_Jsoutput_Init(IntPtr pJsOutput, byte[] a_pk, byte[] pk_enc, long value, byte[] memo, byte[] assetID);
+        public static extern void Snark_Jsoutput_Init(IntPtr pJsOutput, byte[] a_pk, byte[] pk_enc, long value, long fee, byte[] memo, byte[] assetID);
 
         // Note
         [DllImport("./crypto/Quras_snarks.dll", EntryPoint = "Note_Create")]

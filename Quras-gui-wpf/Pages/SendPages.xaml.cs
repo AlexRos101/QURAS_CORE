@@ -172,7 +172,7 @@ namespace Quras_gui_wpf.Pages
                 }
                 else if (cmbAssetType.Text == "XQC")
                 {
-                    amount = long.Parse(txbAmount.Text);
+                    amount = double.Parse(txbAmount.Text);
                 }
                 else
                 {
@@ -384,7 +384,7 @@ namespace Quras_gui_wpf.Pages
                     }
                     else
                     {*/
-                        TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_FEE", iLang), (Fixed8.Satoshi * 10000000 + asset.AFee).ToString(), "XQG", (Fixed8.Satoshi * 10000000 + asset.AFee).ToString(), "XQG");
+                        TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_FEE", iLang), /*(Fixed8.Satoshi * 10000000 + asset.AFee)*/asset.AFeeMin.ToString(), "XQG", /*(Fixed8.Satoshi * 10000000 + asset.AFee)*/asset.AFeeMax.ToString(), "XQG");
                     //}
                 }
                 else
@@ -438,7 +438,7 @@ namespace Quras_gui_wpf.Pages
 
                 if (Wallet.GetAddressVersion(fromAddress) == Wallet.AnonymouseAddressVersion || Wallet.GetAddressVersion(fromAddress) == Wallet.StealthAddressVersion)
                 {
-                    if (asset.AssetType == AssetType.GoverningToken)
+                    /*if (asset.AssetType == AssetType.GoverningToken)
                     {
                         if (asset.AFee < fee)
                         {
@@ -451,6 +451,10 @@ namespace Quras_gui_wpf.Pages
                         {
                             throw new Exception();
                         }
+                    }*/
+                    if (asset.AFeeMin > fee || asset.AFeeMax < fee)
+                    {
+                        throw new Exception();
                     }
                 }
                 else

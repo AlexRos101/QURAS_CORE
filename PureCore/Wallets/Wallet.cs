@@ -1442,7 +1442,7 @@ namespace Pure.Wallets
         {
             if (tx.Outputs == null) tx.Outputs = new TransactionOutput[0];
             if (tx.Attributes == null) tx.Attributes = new TransactionAttribute[0];
-            //fee += tx.SystemFee;        // comment engine or pure-gui, else, not comment this line.
+            fee += tx.SystemFee;        // comment engine or pure-gui, else, not comment this line.
             
             Dictionary<UInt256, Fixed8> dicQRGFee = new Dictionary<UInt256, Fixed8>();
             Dictionary<UInt256, Fixed8> dicQRSFee = new Dictionary<UInt256, Fixed8>();
@@ -1537,7 +1537,7 @@ namespace Pure.Wallets
             {
                 IntPtr pJsOutput = SnarkDllApi.Snark_Jsoutput_Create();
 
-                SnarkDllApi.Snark_Jsoutput_Init(pJsOutput, info.vjsout[i].addr.a_pk.ToArray(), info.vjsout[i].addr.pk_enc.ToArray(), info.vjsout[i].value.GetData(), info.vjsout[i].memo, info.vjsout[i].AssetID.ToArray());
+                SnarkDllApi.Snark_Jsoutput_Init(pJsOutput, info.vjsout[i].addr.a_pk.ToArray(), info.vjsout[i].addr.pk_enc.ToArray(), info.vjsout[i].value.GetData(), info.vjsout[i].fee.GetData(), info.vjsout[i].memo, info.vjsout[i].AssetID.ToArray());
                 SnarkDllApi.Snark_AsyncJoinSplitInfo_Add_JSOutput(asyncJoinSplitInfo_, pJsOutput);
                 SnarkDllApi.Snark_Jsoutput_Delete(pJsOutput);
             }
@@ -1622,10 +1622,15 @@ namespace Pure.Wallets
                     fee += asset.Fee;
                 }
 
-                foreach (var jsOut in info.vjsout.GroupBy(p => p.AssetID))
+                /*foreach (var jsOut in info.vjsout.GroupBy(p => p.AssetID))
                 {
                     AssetState asset = Blockchain.Default.GetAssetState(jsOut.Key);
                     fee += asset.Fee;
+                }*/
+
+                foreach (var jsOut in info.vjsout)
+                {
+                    fee += jsOut.fee;
                 }
 
                 TransactionOutput[] outSample = new TransactionOutput[1];
@@ -1633,6 +1638,7 @@ namespace Pure.Wallets
                 outSample[0] = new TransactionOutput();
                 outSample[0].AssetId = info.vjsout[0].AssetID;
                 outSample[0].Value = info.vpub_old;
+                outSample[0].Fee = info.vjsout[0].fee;
                 var pay_total = outSample.GroupBy(p => p.AssetId, (k, g) => new
                 {
                     AssetId = k,
@@ -1702,7 +1708,7 @@ namespace Pure.Wallets
 
             Fixed8 qrsAssetFee = Fixed8.Zero;
             Fixed8 qrgAssetFee = Fixed8.Zero;
-            foreach (var txOut in info.vjsout.GroupBy(p => p.AssetID))
+            /*foreach (var txOut in info.vjsout.GroupBy(p => p.AssetID))
             {
                 AssetState asset = Blockchain.Default.GetAssetState(txOut.Key);
 
@@ -1719,8 +1725,13 @@ namespace Pure.Wallets
             if (!info.vjsout.Select(p => p.AssetID).Contains(Blockchain.UtilityToken.Hash))
             {
                 qrgAssetFee += Blockchain.UtilityToken.A_Fee;
+            }*/
+
+            foreach (var jsOut in info.vjsout)
+            {
+                qrgAssetFee += jsOut.fee;
             }
-            
+
             var pay_total = (typeof(T) == typeof(IssueTransaction) ? new JSOutput[0] : info.vjsout.ToArray()).GroupBy(p => p.AssetID, (k, g) => new
             {
                 AssetId = k,
@@ -1729,7 +1740,7 @@ namespace Pure.Wallets
 
             if (fromAddrVersion == Wallet.AnonymouseAddressVersion)
             {
-                if (fee > Fixed8.Zero || qrsAssetFee > Fixed8.Zero || qrgAssetFee > Fixed8.Zero)
+                /*if (fee > Fixed8.Zero || qrsAssetFee > Fixed8.Zero || qrgAssetFee > Fixed8.Zero)
                 {
                     if (pay_total.ContainsKey(Blockchain.GoverningToken.Hash))
                     {
@@ -1785,6 +1796,26 @@ namespace Pure.Wallets
                                 Value = fee + qrgAssetFee
                             });
                         }
+                    }
+                }*/
+
+                if (qrgAssetFee > Fixed8.Zero)
+                {
+                    if (pay_total.ContainsKey(Blockchain.UtilityToken.Hash))
+                    {
+                        pay_total[Blockchain.UtilityToken.Hash] = new
+                        {
+                            AssetId = Blockchain.UtilityToken.Hash,
+                            Value = pay_total[Blockchain.UtilityToken.Hash].Value + qrgAssetFee
+                        };
+                    }
+                    else
+                    {
+                        pay_total.Add(Blockchain.UtilityToken.Hash, new
+                        {
+                            AssetId = Blockchain.UtilityToken.Hash,
+                            Value = qrgAssetFee
+                        });
                     }
                 }
 
@@ -1866,7 +1897,7 @@ namespace Pure.Wallets
 
                 Fixed8 qrsAssetFee = Fixed8.Zero;
                 Fixed8 qrgAssetFee = Fixed8.Zero;
-                foreach (var txOut in tx.Outputs.GroupBy(p => p.AssetId))
+                /*foreach (var txOut in tx.Outputs.GroupBy(p => p.AssetId))
                 {
                     AssetState asset = Blockchain.Default.GetAssetState(txOut.Key);
 
@@ -1883,6 +1914,11 @@ namespace Pure.Wallets
                 if (!tx.Outputs.Select(p=> p.AssetId).Contains(Blockchain.UtilityToken.Hash))
                 {
                     qrgAssetFee += Blockchain.UtilityToken.A_Fee;
+                }*/
+
+                foreach (var output in tx.Outputs)
+                {
+                    qrgAssetFee += output.Fee;
                 }
 
                 var pay_total = (typeof(T) == typeof(IssueTransaction) ? new TransactionOutput[0] : tx.Outputs).GroupBy(p => p.AssetId, (k, g) => new
@@ -1891,7 +1927,7 @@ namespace Pure.Wallets
                     Value = g.Sum(p => p.Value)
                 }).ToDictionary(p => p.AssetId);
 
-                if (fee > Fixed8.Zero || qrsAssetFee > Fixed8.Zero || qrgAssetFee > Fixed8.Zero)
+                /*if (fee > Fixed8.Zero || qrsAssetFee > Fixed8.Zero || qrgAssetFee > Fixed8.Zero)
                 {
                     if (pay_total.ContainsKey(Blockchain.GoverningToken.Hash))
                     {
@@ -1948,8 +1984,27 @@ namespace Pure.Wallets
                             });
                         }
                     }
+                }*/
+
+                if (qrgAssetFee > Fixed8.Zero)
+                {
+                    if (pay_total.ContainsKey(Blockchain.UtilityToken.Hash))
+                    {
+                        pay_total[Blockchain.UtilityToken.Hash] = new
+                        {
+                            AssetId = Blockchain.UtilityToken.Hash,
+                            Value = pay_total[Blockchain.UtilityToken.Hash].Value + qrgAssetFee
+                        };
+                    }
+                    else
+                    {
+                        pay_total.Add(Blockchain.UtilityToken.Hash, new
+                        {
+                            AssetId = Blockchain.UtilityToken.Hash,
+                            Value = qrgAssetFee
+                        });
+                    }
                 }
-                
 
                 var pay_coins = pay_total.Select(p => new
                 {

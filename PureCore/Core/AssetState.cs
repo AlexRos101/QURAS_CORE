@@ -24,6 +24,8 @@ namespace Pure.Core
         public Fixed8 FeeMin;
         public Fixed8 FeeMax;
         public Fixed8 AFee;
+        public Fixed8 AFeeMin;
+        public Fixed8 AFeeMax;
         public UInt160 FeeAddress;
         public ECPoint Owner;
         public UInt160 Admin;
@@ -31,7 +33,7 @@ namespace Pure.Core
         public uint Expiration;
         public bool IsFrozen;
 
-        public override int Size => base.Size + AssetId.Size + sizeof(AssetType) + Name.GetVarSize() + Amount.Size + Available.Size + sizeof(byte) + sizeof(byte) + Fee.Size + FeeMin.Size + FeeMax.Size + FeeAddress.Size + Owner.Size + Admin.Size + Issuer.Size + sizeof(uint) + sizeof(bool) + AFee.Size;
+        public override int Size => base.Size + AssetId.Size + sizeof(AssetType) + Name.GetVarSize() + Amount.Size + Available.Size + sizeof(byte) + sizeof(byte) + Fee.Size + FeeMin.Size + FeeMax.Size + FeeAddress.Size + Owner.Size + Admin.Size + Issuer.Size + sizeof(uint) + sizeof(bool) + AFee.Size + AFeeMin.Size + AFeeMax.Size;
 
         AssetState ICloneable<AssetState>.Clone()
         {
@@ -48,6 +50,8 @@ namespace Pure.Core
                 FeeMin = FeeMin,
                 FeeMax = FeeMax, 
                 AFee = AFee,
+                AFeeMin = AFeeMin,
+                AFeeMax = AFeeMax,
                 FeeAddress = FeeAddress,
                 Owner = Owner,
                 Admin = Admin,
@@ -72,6 +76,8 @@ namespace Pure.Core
             FeeMin = reader.ReadSerializable<Fixed8>(); //Fee
             FeeMax = reader.ReadSerializable<Fixed8>(); //Fee
             AFee = reader.ReadSerializable<Fixed8>();
+            AFeeMin = reader.ReadSerializable<Fixed8>(); //Fee
+            AFeeMax = reader.ReadSerializable<Fixed8>(); //Fee
             FeeAddress = reader.ReadSerializable<UInt160>();
             Owner = ECPoint.DeserializeFrom(reader, ECCurve.Secp256r1);
             Admin = reader.ReadSerializable<UInt160>();
@@ -93,6 +99,8 @@ namespace Pure.Core
             FeeMin = replica.FeeMin;
             FeeMax = replica.FeeMax;
             AFee = replica.AFee;
+            AFeeMin = replica.AFeeMin;
+            AFeeMax = replica.AFeeMax;
             FeeAddress = replica.FeeAddress;
             Owner = replica.Owner;
             Admin = replica.Admin;
@@ -154,6 +162,8 @@ namespace Pure.Core
             writer.Write(FeeMin);
             writer.Write(FeeMax);
             writer.Write(AFee);
+            writer.Write(AFeeMin);
+            writer.Write(AFeeMax);
             writer.Write(FeeAddress);
             writer.Write(Owner);
             writer.Write(Admin);
@@ -188,6 +198,8 @@ namespace Pure.Core
             json["feemin"] = FeeMin.ToString();
             json["feemax"] = FeeMax.ToString();
             json["afee"] = AFee.ToString();
+            json["afeemin"] = FeeMin.ToString();
+            json["afeemax"] = FeeMax.ToString();
             return json;
         }
 

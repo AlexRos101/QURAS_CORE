@@ -663,6 +663,8 @@ namespace Pure.Implementations.Blockchains.LevelDB
                                 FeeMin = rtx.T_Fee_Min,
                                 FeeMax = rtx.T_Fee_Max,
                                 AFee = rtx.A_Fee,
+                                AFeeMin = rtx.A_Fee_Min,
+                                AFeeMax = rtx.A_Fee_Max,
                                 FeeAddress = new UInt160(),
                                 Owner = rtx.Owner,
                                 Admin = rtx.Admin,

@@ -592,10 +592,16 @@ namespace Quras_gui_wpf.Controls
                                 balance[txOut.AssetId] -= txOut.Value;
                             }
                         }
+                        if (!fee.ContainsKey(txOut.AssetId)) {
+                            if (txOut.Fee != Fixed8.Zero)
+                            {
+                                fee[txOut.AssetId] = txOut.Fee;
+                            }
+                        }
                     }
 
                     // Calculate Fee
-                    for (int i = 0; i < ((AnonymousContractTransaction)_info.Transaction).byJoinSplit.Count; i ++)
+                    /*for (int i = 0; i < ((AnonymousContractTransaction)_info.Transaction).byJoinSplit.Count; i ++)
                     {
                         if (!fee.ContainsKey(((AnonymousContractTransaction)_info.Transaction).Asset_ID(i)))
                         {
@@ -612,6 +618,13 @@ namespace Quras_gui_wpf.Controls
                     {
                         fee[Blockchain.GoverningToken.Hash] = qrsFee;
                     }
+                    if (qrgFee >= Fixed8.Zero)
+                    {
+                        fee[Blockchain.UtilityToken.Hash] = qrgFee;
+                    }*/
+
+                    Fixed8 qrgFee = fee.Sum(p => p.Value);
+                    fee.Clear();
                     if (qrgFee >= Fixed8.Zero)
                     {
                         fee[Blockchain.UtilityToken.Hash] = qrgFee;
@@ -1173,15 +1186,15 @@ namespace Quras_gui_wpf.Controls
                     }
                     else
                     {
-                        TxbAddress.Text = "";
-                        for (int i = 0; i < transInfo.RingCTSig.Count(); i++)
+                        TxbAddress.Text = "XXX";
+                        /*for (int i = 0; i < transInfo.RingCTSig.Count(); i++)
                         {
                             for (int j = 0; j < transInfo.RingCTSig[i].outPK.Count(); j++)
                             {
                                 TxbAddress.Text += transInfo.RingCTSig[i].outPK[j].dest.ToString();
                                 //TxbAddress.Text += Wallet.ToStealthAddress(cPK);
                             }
-                        }
+                        }*/
 
                         #region Calculate balance & fee
                         for (int i = 0; i < _info.Transaction.Outputs.Length; i++)
@@ -1263,8 +1276,8 @@ namespace Quras_gui_wpf.Controls
                     else
                     {
                         txArrow = TxArrow.From;
-                        TxbAddress.Text = "";
-                        for (int i = 0; i < transInfo.RingCTSig.Count(); i++)
+                        TxbAddress.Text = "XXX";
+                        /*for (int i = 0; i < transInfo.RingCTSig.Count(); i++)
                         {
                             for (int j = 0; j < transInfo.RingCTSig[i].outPK.Count(); j++)
                             {
@@ -1272,7 +1285,7 @@ namespace Quras_gui_wpf.Controls
                                     TxbAddress.Text += transInfo.RingCTSig[i].outPK[j].dest.ToString();
                                 //TxbAddress.Text += Wallet.ToStealthAddress(cPK);
                             }
-                        }
+                        }*/
                         this.gridColorPan.Background = new SolidColorBrush(Color.FromArgb(0xFF, 122, 229, 147));
                     }
 
@@ -1390,14 +1403,14 @@ namespace Quras_gui_wpf.Controls
                                         else
                                             fee[transInfo.RingCTSig[index].AssetID] = _info.Transaction.Outputs[index].Fee;*/
 
-                                        TxbAddress.Text = "";
-                                        if (transInfo.RingCTSig[index].outPK.Count == 2)
+                                        TxbAddress.Text = "XXX";
+                                        /*if (transInfo.RingCTSig[index].outPK.Count == 2)
                                         {
                                             if (j == 0)
                                                 TxbAddress.Text += transInfo.RingCTSig[index].outPK[1].dest.ToString();
                                             else
                                                 TxbAddress.Text += transInfo.RingCTSig[index].outPK[0].dest.ToString();
-                                        }
+                                        }*/
                                         //TxbAddress.Text += Wallet.ToStealthAddress(cPK);
                                     }
                                 }

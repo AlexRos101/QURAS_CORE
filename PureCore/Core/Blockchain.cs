@@ -37,7 +37,10 @@ namespace Pure.Core
             Inputs = new CoinReference[0],
             Outputs = new TransactionOutput[0],
             Scripts = new Witness[0],
-            A_Fee = Fixed8.Satoshi * 1000000,
+            //A_Fee = Fixed8.Satoshi * 1000000,
+            A_Fee = Fixed8.Zero,
+            A_Fee_Min = Fixed8.Satoshi * 1000000,
+            A_Fee_Max = Fixed8.Satoshi * 10000000,
             T_Fee = Fixed8.Zero,
             T_Fee_Min = Fixed8.Zero,
             T_Fee_Max = new Fixed8(1) * 100000000
@@ -55,7 +58,10 @@ namespace Pure.Core
             Inputs = new CoinReference[0],
             Outputs = new TransactionOutput[0],
             Scripts = new Witness[0],
-            A_Fee = Fixed8.Satoshi * 1000000,
+            //A_Fee = Fixed8.Satoshi * 1000000,
+            A_Fee = Fixed8.Zero,
+            A_Fee_Min = Fixed8.Satoshi * 1000000,
+            A_Fee_Max = Fixed8.Satoshi * 10000000,
             T_Fee = Fixed8.Zero,
             T_Fee_Min = Fixed8.Zero,
             T_Fee_Max = new Fixed8(1) * 100000000

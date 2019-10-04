@@ -13,6 +13,7 @@ namespace Pure.Core.Anonoymous
     {
         public PaymentAddress addr;
         public Fixed8 value;
+        public Fixed8 fee;
         public byte[] memo;
         public UInt256 AssetID;
 
@@ -32,10 +33,20 @@ namespace Pure.Core.Anonoymous
             memo = new byte[0];
         }
 
+        public JSOutput(PaymentAddress addr, Fixed8 value, Fixed8 fee, UInt256 Asset_ID)
+        {
+            this.addr = addr;
+            this.value = value;
+            this.fee = fee;
+            this.memo = new byte[0];
+            this.AssetID = Asset_ID;
+        }
+
         public JSOutput(PaymentAddress addr, Fixed8 value, UInt256 Asset_ID)
         {
             this.addr = addr;
             this.value = value;
+            this.fee = Fixed8.Zero;
             this.memo = new byte[0];
             this.AssetID = Asset_ID;
         }

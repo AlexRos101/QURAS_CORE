@@ -155,6 +155,8 @@ namespace Pure.SmartContract
             UInt160 admin = new UInt160(engine.EvaluationStack.Pop().GetByteArray());
             UInt160 issuer = new UInt160(engine.EvaluationStack.Pop().GetByteArray());
             Fixed8 a_fee = new Fixed8((long)engine.EvaluationStack.Pop().GetBigInteger());
+            Fixed8 a_fee_min = new Fixed8((long)engine.EvaluationStack.Pop().GetBigInteger());
+            Fixed8 a_fee_max = new Fixed8((long)engine.EvaluationStack.Pop().GetBigInteger());
             Fixed8 t_fee = new Fixed8((long)engine.EvaluationStack.Pop().GetBigInteger());
             Fixed8 t_fee_min = new Fixed8((long)engine.EvaluationStack.Pop().GetBigInteger());
             Fixed8 t_fee_max = new Fixed8((long)engine.EvaluationStack.Pop().GetBigInteger());
@@ -176,7 +178,9 @@ namespace Pure.SmartContract
                 Issuer = issuer,
                 Expiration = Blockchain.Default.Height + 1 + 4000000,   // 2 Years
                 IsFrozen = false,
-                AFee = a_fee
+                AFee = a_fee,
+                AFeeMin = a_fee_min,
+                AFeeMax = a_fee_max
             });
             engine.EvaluationStack.Push(StackItem.FromInterface(asset));
             return true;

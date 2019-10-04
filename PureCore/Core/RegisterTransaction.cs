@@ -20,11 +20,13 @@ namespace Pure.Core
         public ECPoint Owner;
         public UInt160 Admin;
         public Fixed8 A_Fee;
+        public Fixed8 A_Fee_Min;
+        public Fixed8 A_Fee_Max;
         public Fixed8 T_Fee;
         public Fixed8 T_Fee_Min;
         public Fixed8 T_Fee_Max;
 
-        public override int Size => base.Size + sizeof(AssetType) + Name.GetVarSize() + Amount.Size + sizeof(byte) + Owner.Size + Admin.Size + A_Fee.Size + T_Fee.Size + T_Fee_Min.Size + T_Fee_Max.Size;
+        public override int Size => base.Size + sizeof(AssetType) + Name.GetVarSize() + Amount.Size + sizeof(byte) + Owner.Size + Admin.Size + A_Fee.Size + A_Fee_Min.Size + A_Fee_Max.Size + T_Fee.Size + T_Fee_Min.Size + T_Fee_Max.Size;
 
         public override Fixed8 SystemFee
         {
@@ -53,6 +55,8 @@ namespace Pure.Core
                 throw new FormatException();
             Admin = reader.ReadSerializable<UInt160>();
             A_Fee = reader.ReadSerializable<Fixed8>();
+            A_Fee_Min = reader.ReadSerializable<Fixed8>();
+            A_Fee_Max = reader.ReadSerializable<Fixed8>();
             T_Fee = reader.ReadSerializable<Fixed8>();
             T_Fee_Min = reader.ReadSerializable<Fixed8>();
             T_Fee_Max = reader.ReadSerializable<Fixed8>();
@@ -82,6 +86,8 @@ namespace Pure.Core
             writer.Write(Owner);
             writer.Write(Admin);
             writer.Write(A_Fee);
+            writer.Write(A_Fee_Min);
+            writer.Write(A_Fee_Max);
             writer.Write(T_Fee);
             writer.Write(T_Fee_Min);
             writer.Write(T_Fee_Max);
@@ -105,6 +111,8 @@ namespace Pure.Core
             json["asset"]["owner"] = Owner.ToString();
             json["asset"]["admin"] = Wallet.ToAddress(Admin);
             json["asset"]["A_fee"] = A_Fee.ToString();
+            json["asset"]["A_fee_min"] = T_Fee_Min.ToString();
+            json["asset"]["A_fee_max"] = T_Fee_Max.ToString();
             json["asset"]["T_fee"] = T_Fee.ToString();
             json["asset"]["T_fee_min"] = T_Fee_Min.ToString();
             json["asset"]["T_fee_max"] = T_Fee_Max.ToString();
