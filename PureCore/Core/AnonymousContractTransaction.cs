@@ -19,7 +19,7 @@ namespace Pure.Core
         {
             get
             {
-                return Fixed8.Zero;
+                return Fixed8.Satoshi * 1000000;
             }
         }
 
@@ -27,7 +27,7 @@ namespace Pure.Core
         {
             get
             {
-                return Fixed8.Satoshi * 10000000;
+                return Fixed8.Satoshi * 1000000;
             }
         }
 
@@ -388,7 +388,7 @@ namespace Pure.Core
                 }
             }
 
-            if (result_other_fee > Fixed8.Zero || (QrsSystemFee > result_qrs_fee) || (SystemFee > result_qrg_fee && assetFee > Fixed8.Zero))
+            if (result_other_fee > Fixed8.Zero/* || (QrsSystemFee > result_qrs_fee)*/ || (SystemFee > result_qrg_fee && assetFee > Fixed8.Zero))
             {
                 return false;
             }

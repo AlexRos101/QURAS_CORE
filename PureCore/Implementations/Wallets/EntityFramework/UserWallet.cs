@@ -591,7 +591,8 @@ namespace Pure.Implementations.Wallets.EntityFramework
             
             foreach (RCTWalletCoin coin in rctchanged)
             {
-                ctx.RCTCoins.First(p => p.TxId.SequenceEqual(coin.Reference.PrevHash.ToArray()) && p.RctID == coin.Reference.PrevRCTSigId && p.Index == coin.Reference.PrevRCTSigIndex).State = coin.State;
+                ctx.RCTCoins.First(p => p.TxRCTHash.SequenceEqual(coin.Reference.TxRCTHash.ToArray()) /*&& p.RctID == coin.Reference.PrevRCTSigId && p.Index == coin.Reference.PrevRCTSigIndex*/).State = coin.State;
+                ctx.RCTCoins.First(p => p.TxRCTHash.SequenceEqual(coin.Reference.TxRCTHash.ToArray()) /*&& p.RctID == coin.Reference.PrevRCTSigId && p.Index == coin.Reference.PrevRCTSigIndex*/).Value = coin.Output.Value.GetData();
                 try
                 {
                     ctx.SaveChanges();

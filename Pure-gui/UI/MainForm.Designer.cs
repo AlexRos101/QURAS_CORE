@@ -590,7 +590,7 @@
             // toolStripProgressBar1
             // 
             this.toolStripProgressBar1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripProgressBar1.Maximum = 15;
+            this.toolStripProgressBar1.Maximum = 18;
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
             resources.ApplyResources(this.toolStripProgressBar1, "toolStripProgressBar1");
             this.toolStripProgressBar1.Step = 1;

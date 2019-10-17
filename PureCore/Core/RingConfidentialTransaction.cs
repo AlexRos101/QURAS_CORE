@@ -217,20 +217,24 @@ namespace Pure.Core
                             {
                                 amount[RingCTSig[i].AssetID] -= RingCTSig[i].vPub;
                             }
+                            else if(i == RingCTSig.Count - 1 && RingCTSig[i].AssetID == Blockchain.UtilityToken.Hash && RingCTSig[i].vPub != Fixed8.Zero)
+                            {
+                                amount[RingCTSig[i].AssetID] = Fixed8.Zero - RingCTSig[i].vPub;
+                            }
                             else
                             {
                                 return false;
                             }
                         }
 
-                        if (QrsSystemFee > Fixed8.Zero)
+/*                        if (QrsSystemFee > Fixed8.Zero)
                         {
-                            amount[Blockchain.GoverningToken.Hash] += QrsSystemFee;
-                        }
+                            amount[Blockchain.GoverningToken.Hash] += Fixed8.Zero;
+                        }*/
 
                         if (SystemFee > Fixed8.Zero)
                         {
-                            amount[Blockchain.UtilityToken.Hash] += SystemFee;
+                            amount[Blockchain.UtilityToken.Hash] += Blockchain.UtilityToken.A_Fee;
                         }
 
                         foreach (var key in amount.Keys)

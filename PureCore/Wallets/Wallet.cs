@@ -990,11 +990,11 @@ namespace Pure.Wallets
                         case RingConfidentialTransactionType.S_S_Transaction:
                         case RingConfidentialTransactionType.S_T_Transaction:
                         case RingConfidentialTransactionType.S_ST_Transaction:
-                            qrsSysFee = Fixed8.Satoshi * 10000000;
+                            qrsSysFee = Blockchain.UtilityToken.A_Fee;
                             break;
                         case RingConfidentialTransactionType.T_S_Transaction:
                         case RingConfidentialTransactionType.T_ST_Transaction:
-                            qrsSysFee = Fixed8.Zero;
+                            qrsSysFee = Blockchain.UtilityToken.A_Fee;
                             break;
                         default:
                             qrsSysFee = Fixed8.Zero;
@@ -1008,11 +1008,11 @@ namespace Pure.Wallets
                         case RingConfidentialTransactionType.S_S_Transaction:
                         case RingConfidentialTransactionType.S_T_Transaction:
                         case RingConfidentialTransactionType.S_ST_Transaction:
-                            sysFee = Fixed8.Satoshi * 10000000;
+                            sysFee = Blockchain.UtilityToken.A_Fee;
                             break;
                         case RingConfidentialTransactionType.T_S_Transaction:
                         case RingConfidentialTransactionType.T_ST_Transaction:
-                            sysFee = Fixed8.Zero;
+                            sysFee = Blockchain.UtilityToken.A_Fee;
                             break;
                         default:
                             sysFee = Fixed8.Zero;
@@ -1030,11 +1030,11 @@ namespace Pure.Wallets
                         case RingConfidentialTransactionType.S_S_Transaction:
                         case RingConfidentialTransactionType.S_T_Transaction:
                         case RingConfidentialTransactionType.S_ST_Transaction:
-                            qrsSysFee = Fixed8.Satoshi * 10000000;
+                            qrsSysFee = Blockchain.UtilityToken.A_Fee;
                             break;
                         case RingConfidentialTransactionType.T_S_Transaction:
                         case RingConfidentialTransactionType.T_ST_Transaction:
-                            qrsSysFee = Fixed8.Zero;
+                            qrsSysFee = Blockchain.UtilityToken.A_Fee;
                             break;
                         default:
                             qrsSysFee = Fixed8.Zero;
@@ -1048,11 +1048,11 @@ namespace Pure.Wallets
                         case RingConfidentialTransactionType.S_S_Transaction:
                         case RingConfidentialTransactionType.S_T_Transaction:
                         case RingConfidentialTransactionType.S_ST_Transaction:
-                            sysFee = Fixed8.Satoshi * 10000000;
+                            sysFee = Blockchain.UtilityToken.A_Fee;
                             break;
                         case RingConfidentialTransactionType.T_S_Transaction:
                         case RingConfidentialTransactionType.T_ST_Transaction:
-                            sysFee = Fixed8.Zero;
+                            sysFee = Blockchain.UtilityToken.A_Fee;
                             break;
                         default:
                             sysFee = Fixed8.Zero;
@@ -1106,13 +1106,13 @@ namespace Pure.Wallets
 
             if (qrsSysFee > Fixed8.Zero)
             {
-                if (pay_total.ContainsKey(Blockchain.GoverningToken.Hash))
+                if (pay_total.ContainsKey(Blockchain.UtilityToken.Hash))
                 {
-                    pay_total[Blockchain.GoverningToken.Hash] += qrsSysFee;
+                    pay_total[Blockchain.UtilityToken.Hash] += qrsSysFee;
                 }
                 else
                 {
-                    pay_total[Blockchain.GoverningToken.Hash] = qrsSysFee;
+                    pay_total[Blockchain.UtilityToken.Hash] = qrsSysFee;
                 }
             }
 
@@ -1160,6 +1160,8 @@ namespace Pure.Wallets
                         });
                     }
                 }
+
+                //Fixed8 fee_amount = (qrsSysFee > sysFee ? qrsSysFee : sysFee );
 
                 foreach(var key in pay_coins.Keys)
                 {
@@ -1230,9 +1232,18 @@ namespace Pure.Wallets
 
                     Fixed8 vPub = tx.Outputs.Where(p => p.AssetId == key).Sum(p => p.Value);
 
+                    if (tx.Outputs.Length == 0) // S -> S 
+                    {
+                        if (key == Blockchain.UtilityToken.Hash && sysFee == Fixed8.Zero)
+                            vPub = (sysFee > qrsSysFee ? sysFee : qrsSysFee);
+                    }
+                    else if (vPub == Fixed8.Zero)
+                        vPub = (sysFee > qrsSysFee ? sysFee : qrsSysFee);
+
+
                     if (key == Blockchain.GoverningToken.Hash)
                     {
-                        RingCTSignatureType sig = RingCTSignature.Generate(inSK, inPKIndex, destinations, amounts, qrsSysFee + vPub, RingSize, key, Fixed8.Zero);
+                        RingCTSignatureType sig = RingCTSignature.Generate(inSK, inPKIndex, destinations, amounts, sysFee + vPub, RingSize, key, Fixed8.Zero);
                         sig.AssetID = key;
                         tx.RingCTSig.Add(sig);
                     }
@@ -1249,7 +1260,7 @@ namespace Pure.Wallets
                         tx.RingCTSig.Add(sig);
                     }
 
-                    if (!RingCTSignature.Verify(tx.RingCTSig[0], Fixed8.Zero))
+                    if (!RingCTSignature.Verify(tx.RingCTSig[tx.RingCTSig.Count - 1], Fixed8.Zero))
                     {
                         return null;
                     }
@@ -1337,7 +1348,7 @@ namespace Pure.Wallets
 
                     if (key == Blockchain.GoverningToken.Hash)
                     {
-                        RingCTSignatureType sig = RingCTSignature.Generate(inSK, inPKIndex, destinations, amounts, qrsSysFee + vPub, RingSize, key, vPubOld);
+                        RingCTSignatureType sig = RingCTSignature.Generate(inSK, inPKIndex, destinations, amounts, sysFee + vPub, RingSize, key, vPubOld);
                         sig.AssetID = key;
                         tx.RingCTSig.Add(sig);
                     }
@@ -1358,6 +1369,7 @@ namespace Pure.Wallets
                     {
                         return null;
                     }
+                    break;
                 }
 
                 //return tx;
@@ -1537,7 +1549,7 @@ namespace Pure.Wallets
             {
                 IntPtr pJsOutput = SnarkDllApi.Snark_Jsoutput_Create();
 
-                SnarkDllApi.Snark_Jsoutput_Init(pJsOutput, info.vjsout[i].addr.a_pk.ToArray(), info.vjsout[i].addr.pk_enc.ToArray(), info.vjsout[i].value.GetData(), info.vjsout[i].fee.GetData(), info.vjsout[i].memo, info.vjsout[i].AssetID.ToArray());
+                SnarkDllApi.Snark_Jsoutput_Init(pJsOutput, info.vjsout[i].addr.a_pk.ToArray(), info.vjsout[i].addr.pk_enc.ToArray(), info.vjsout[i].value.GetData(), info.vjsout[i].memo, info.vjsout[i].AssetID.ToArray());
                 SnarkDllApi.Snark_AsyncJoinSplitInfo_Add_JSOutput(asyncJoinSplitInfo_, pJsOutput);
                 SnarkDllApi.Snark_Jsoutput_Delete(pJsOutput);
             }
@@ -1614,23 +1626,18 @@ namespace Pure.Wallets
             {
                 if (tx.Outputs == null) tx.Outputs = new TransactionOutput[0];
                 if (tx.Attributes == null) tx.Attributes = new TransactionAttribute[0];
-                fee += tx.FromTSysFee;
+                //fee += tx.FromTSysFee;
 
                 foreach (var txOut in tx.Outputs.GroupBy(p => p.AssetId))
                 {
                     AssetState asset = Blockchain.Default.GetAssetState(txOut.Key);
-                    fee += asset.Fee;
+                    fee += asset.AFee;
                 }
 
-                /*foreach (var jsOut in info.vjsout.GroupBy(p => p.AssetID))
+                foreach (var jsOut in info.vjsout.GroupBy(p => p.AssetID))
                 {
                     AssetState asset = Blockchain.Default.GetAssetState(jsOut.Key);
-                    fee += asset.Fee;
-                }*/
-
-                foreach (var jsOut in info.vjsout)
-                {
-                    fee += jsOut.fee;
+                    fee += asset.AFee;
                 }
 
                 TransactionOutput[] outSample = new TransactionOutput[1];
@@ -1638,7 +1645,6 @@ namespace Pure.Wallets
                 outSample[0] = new TransactionOutput();
                 outSample[0].AssetId = info.vjsout[0].AssetID;
                 outSample[0].Value = info.vpub_old;
-                outSample[0].Fee = info.vjsout[0].fee;
                 var pay_total = outSample.GroupBy(p => p.AssetId, (k, g) => new
                 {
                     AssetId = k,
@@ -1706,32 +1712,28 @@ namespace Pure.Wallets
             if (tx.Attributes == null) tx.Attributes = new TransactionAttribute[0];
             // fee += tx.FromASysFee;
 
-            Fixed8 qrsAssetFee = Fixed8.Zero;
+            //Fixed8 qrsAssetFee = Fixed8.Zero;
             Fixed8 qrgAssetFee = Fixed8.Zero;
-            /*foreach (var txOut in info.vjsout.GroupBy(p => p.AssetID))
+            foreach (var txOut in info.vjsout.GroupBy(p => p.AssetID))
             {
                 AssetState asset = Blockchain.Default.GetAssetState(txOut.Key);
 
-                if (asset.AssetId == Blockchain.GoverningToken.Hash)
+                /*if (asset.AssetId == Blockchain.GoverningToken.Hash)
                 {
                     qrsAssetFee += asset.AFee;
                 }
                 else
                 {
                     qrgAssetFee += asset.AFee;
-                }
+                }*/
+                qrgAssetFee += asset.AFee;
             }
 
-            if (!info.vjsout.Select(p => p.AssetID).Contains(Blockchain.UtilityToken.Hash))
+            /*if (!info.vjsout.Select(p => p.AssetID).Contains(Blockchain.UtilityToken.Hash))
             {
                 qrgAssetFee += Blockchain.UtilityToken.A_Fee;
             }*/
-
-            foreach (var jsOut in info.vjsout)
-            {
-                qrgAssetFee += jsOut.fee;
-            }
-
+            
             var pay_total = (typeof(T) == typeof(IssueTransaction) ? new JSOutput[0] : info.vjsout.ToArray()).GroupBy(p => p.AssetID, (k, g) => new
             {
                 AssetId = k,
@@ -1799,7 +1801,7 @@ namespace Pure.Wallets
                     }
                 }*/
 
-                if (qrgAssetFee > Fixed8.Zero)
+                if (fee > Fixed8.Zero || qrgAssetFee > Fixed8.Zero)
                 {
                     if (pay_total.ContainsKey(Blockchain.UtilityToken.Hash))
                     {
@@ -1818,7 +1820,6 @@ namespace Pure.Wallets
                         });
                     }
                 }
-
 
                 var pay_coins = pay_total.Select(p => new
                 {
@@ -1880,7 +1881,7 @@ namespace Pure.Wallets
                 info.vjsout = outputs_new;
             }
 
-            if (qrgAssetFee < tx.SystemFee || qrsAssetFee < tx.QrsSystemFee) return null;
+            if (qrgAssetFee < tx.SystemFee/* || qrsAssetFee < tx.QrsSystemFee*/) return null;
             return tx;
         }
 
@@ -1895,31 +1896,26 @@ namespace Pure.Wallets
                 if (tx.Attributes == null) tx.Attributes = new TransactionAttribute[0];
                 //fee += tx.SystemFee;
 
-                Fixed8 qrsAssetFee = Fixed8.Zero;
+                //Fixed8 qrsAssetFee = Fixed8.Zero;
                 Fixed8 qrgAssetFee = Fixed8.Zero;
-                /*foreach (var txOut in tx.Outputs.GroupBy(p => p.AssetId))
+                foreach (var txOut in tx.Outputs.GroupBy(p => p.AssetId))
                 {
                     AssetState asset = Blockchain.Default.GetAssetState(txOut.Key);
 
-                    if (asset.AssetId == Blockchain.GoverningToken.Hash)
+                    /*if (asset.AssetId == Blockchain.GoverningToken.Hash)
                     {
                         qrsAssetFee += asset.AFee;
                     }
                     else
-                    {
+                    {*/
                         qrgAssetFee += asset.AFee;
-                    }
+                    //}
                 }
 
-                if (!tx.Outputs.Select(p=> p.AssetId).Contains(Blockchain.UtilityToken.Hash))
+                /*if (!tx.Outputs.Select(p=> p.AssetId).Contains(Blockchain.UtilityToken.Hash))
                 {
                     qrgAssetFee += Blockchain.UtilityToken.A_Fee;
                 }*/
-
-                foreach (var output in tx.Outputs)
-                {
-                    qrgAssetFee += output.Fee;
-                }
 
                 var pay_total = (typeof(T) == typeof(IssueTransaction) ? new TransactionOutput[0] : tx.Outputs).GroupBy(p => p.AssetId, (k, g) => new
                 {
@@ -1986,7 +1982,7 @@ namespace Pure.Wallets
                     }
                 }*/
 
-                if (qrgAssetFee > Fixed8.Zero)
+                if (fee > Fixed8.Zero || qrgAssetFee > Fixed8.Zero)
                 {
                     if (pay_total.ContainsKey(Blockchain.UtilityToken.Hash))
                     {
@@ -2005,6 +2001,7 @@ namespace Pure.Wallets
                         });
                     }
                 }
+
 
                 var pay_coins = pay_total.Select(p => new
                 {
@@ -2065,7 +2062,7 @@ namespace Pure.Wallets
                 info.vjsin = input_new;
                 info.vjsout = outputs_new;
 
-                if (qrgAssetFee < tx.SystemFee || qrsAssetFee < tx.QrsSystemFee) return null;
+                if (qrgAssetFee < tx.SystemFee/* || qrsAssetFee < tx.QrsSystemFee*/) return null;
             }
             return tx;
         }
@@ -2366,25 +2363,49 @@ namespace Pure.Wallets
                                                         ScriptHash = Contract.CreateRingSignatureRedeemScript(rctKey.PayloadPubKey, rctKey.ViewPubKey).ToScriptHash()
                                                     };// (rtx.RingCTSig[i].AssetID, amount, rtx.RingCTSig[i].outPK[j].dest);
 
-                                                    
+                                                    int k;
 
-                                                    if (rctcoins.Contains(reference))
+                                                    if (rctcoins.Contains(reference) && rctcoins[reference].State == CoinState.Unconfirmed)
                                                     {
                                                         rctcoins[reference].State |= CoinState.Confirmed;
                                                         rctcoins[reference].Output = output;
-                                                        rctcoins[reference].Reference = reference;
                                                     }
                                                     else
                                                     {
-                                                        rctcoins.Add(new RCTCoin
+                                                        for (k = 0; k < rctcoins.Count; k++)
+                                                            if (rctcoins[k].Reference.TxRCTHash.Equals(reference.TxRCTHash))
+                                                            {
+                                                                if (rctcoins[k].State == CoinState.Unconfirmed)
+                                                                {
+                                                                    break;
+                                                                }
+                                                                else if (rctcoins[k].State == CoinState.Confirmed && rctcoins[k].Output.AssetId == rtx.RingCTSig[i].AssetID)
+                                                                {
+                                                                    k = -1;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        if (k != -1 && !rctcoins.Contains(reference))
                                                         {
-                                                            Reference = reference,
-                                                            Output = output,
-                                                            State = CoinState.Confirmed
-                                                        });
+                                                            if (k < rctcoins.Count)
+                                                            {
+                                                                rctcoins[k].State |= CoinState.Spent;
+                                                                rctcoins[k].Output.Value = Fixed8.Zero;
+                                                            }
+                                                           
+                                                            rctcoins.Add(new RCTCoin
+                                                            {
+                                                                Reference = reference,
+                                                                Output = output,
+                                                                State = CoinState.Confirmed
+                                                            });
+                                                        }
                                                     }
+                                                    
 
-                                                    if (rtx.RingCTSig[i].mixRing.Count > 1)
+                                                    
+
+                                                    /*if (rtx.RingCTSig[i].mixRing.Count > 1)
                                                         foreach (RCTCoin coins in rctcoins)
                                                         {
                                                             if (coins.Reference.PrevHash == rtx.RingCTSig[i].mixRing[1][0].txHash)
@@ -2392,12 +2413,12 @@ namespace Pure.Wallets
                                                                 reference = coins.Reference;
                                                                 is_rtc_contains = true; break;
                                                             }
-                                                        }
+                                                        }*/
 
-                                                    if (is_rtc_contains == true)
+                                                    /*if (is_rtc_contains == true)
                                                     {
                                                         rctcoins[reference].State |= CoinState.Spent;
-                                                    }
+                                                    }*/
                                                 }
                                             }
                                         }
@@ -2930,16 +2951,23 @@ namespace Pure.Wallets
                                                     ScriptHash = Contract.CreateRingSignatureRedeemScript(rctKey.PayloadPubKey, rctKey.ViewPubKey).ToScriptHash()
                                                 };// (rtx.RingCTSig[i].AssetID, amount, rtx.RingCTSig[i].outPK[j].dest);
 
-                                                if (rtx.RingCTSig[i].mixRing.Count > 1)
-                                                    foreach (RCTCoin coins in rctcoins)
+                                                
+                                                for (int k = 0; k < rtx.RingCTSig[i].mixRing.Count; k ++)
+                                                {
+                                                    for (int l = 0; l < rtx.RingCTSig[i].mixRing[k].Count; l ++)
                                                     {
-                                                        if (coins.Reference.PrevHash == rtx.RingCTSig[i].mixRing[1][0].txHash)
+                                                        foreach (RCTCoin coins in rctcoins)
                                                         {
-                                                            reference = coins.Reference;
-                                                            is_rtc_contains = true; break;
+                                                            if ((coins.State & CoinState.Spent) == 0 && coins.Reference.PrevHash == rtx.RingCTSig[i].mixRing[k][l].txHash && coins.Output.AssetId == rtx.RingCTSig[i].AssetID)
+                                                            {
+                                                                coins.State |= CoinState.Spent; l = rtx.RingCTSig[i].mixRing[k].Count - 1; k = rtx.RingCTSig[i].mixRing.Count - 1;
+                                                                break;
+                                                            }
                                                         }
                                                     }
-                                                if (is_rtc_contains == true)
+                                                }
+
+                                                if (rctcoins.Contains(reference))
                                                 {
                                                     rctcoins[reference].State |= CoinState.Confirmed;
                                                 }
@@ -2953,20 +2981,6 @@ namespace Pure.Wallets
                                                     });
                                                 }
 
-                                                rctchangeset = rctcoins.GetChangeSet();
-                                                OnSaveTransaction(tx,
-                                                Enumerable.Empty<Coin>(),
-                                                Enumerable.Empty<Coin>(),
-                                                Enumerable.Empty<JSCoin>(),
-                                                Enumerable.Empty<JSCoin>(),
-                                                Enumerable.Empty<JSCoin>(),
-                                                Enumerable.Empty<JSCoin>(),
-                                                rctchangeset.Where(p => 
-                                                ((ITrackable<RCTCoinReference>)p).TrackState == TrackState.Added),
-                                                rctchangeset.Where(p =>
-                                                ((ITrackable<RCTCoinReference>)p).TrackState == TrackState.Changed),
-                                                Enumerable.Empty<RCTCoin>());
-
                                             }
                                             else
                                             {
@@ -2977,6 +2991,19 @@ namespace Pure.Wallets
                                 }
                             }
                         }
+                        rctchangeset = rctcoins.GetChangeSet();
+                        OnSaveTransaction(tx,
+                        Enumerable.Empty<Coin>(),
+                        Enumerable.Empty<Coin>(),
+                        Enumerable.Empty<JSCoin>(),
+                        Enumerable.Empty<JSCoin>(),
+                        Enumerable.Empty<JSCoin>(),
+                        Enumerable.Empty<JSCoin>(),
+                        rctchangeset.Where(p =>
+                        ((ITrackable<RCTCoinReference>)p).TrackState == TrackState.Added),
+                        rctchangeset.Where(p =>
+                        ((ITrackable<RCTCoinReference>)p).TrackState == TrackState.Changed),
+                        Enumerable.Empty<RCTCoin>());
                     }
                 }
             }

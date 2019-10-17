@@ -45,217 +45,106 @@ namespace Pure.Core
             Dictionary<UInt256, Fixed8> ret = new Dictionary<UInt256, Fixed8>();
             #region Calculate QRG fee
             {
-                Transaction[] ts = transactions.Where(p => p.Type != TransactionType.MinerTransaction && p.Type != TransactionType.ClaimTransaction && p.Type != TransactionType.AnonymousContractTransaction).ToArray();
-                Fixed8 amount_in = ts.SelectMany(p => p.References.Values.Where(o => o.AssetId == Blockchain.UtilityToken.Hash)).Sum(p => p.Value);
-                Fixed8 amount_out = ts.SelectMany(p => p.Outputs.Where(o => o.AssetId == Blockchain.UtilityToken.Hash)).Sum(p => p.Value);
-                Fixed8 amount_sysfee = ts.Sum(p => p.SystemFee);
-                Fixed8 normalFee = amount_in - amount_out;
+                Transaction[] ats = transactions.Where(p => p.Type == TransactionType.AnonymousContractTransaction).ToArray();
 
-                Transaction[] ats = transactions.Where(p => p.Type == TransactionType.AnonymousContractTransaction && p.Inputs.Length == 0).ToArray();
-                Fixed8 v_pubNewSum = Fixed8.Zero;
-                Fixed8 outAmount = ats.SelectMany(p => p.Outputs.Where(o => o.AssetId == Blockchain.UtilityToken.Hash)).Sum(p => p.Value);
+                Transaction[] ars = transactions.Where(p => p.Type == TransactionType.RingConfidentialTransaction).ToArray();
 
+                foreach(var arx in ars)
+                {
+                    if (arx is RingConfidentialTransaction)
+                    {
+                        var ringTR = arx as RingConfidentialTransaction;
+                        if (ringTR.RingCTSig.Count > 0)
+                        {
+                            AssetState asset = Blockchain.Default.GetAssetState(ringTR.RingCTSig[0].AssetID);
+
+                            if (ret.ContainsKey(asset.AssetId))
+                                ret[asset.AssetId] += asset.AFee;
+                            else
+                                ret[asset.AssetId] = asset.AFee;
+                        }
+                    }
+                }
+                    
                 foreach (var atx in ats)
                 {
                     if (atx is AnonymousContractTransaction)
                     {
                         var formatedTx = atx as AnonymousContractTransaction;
-                        for (int i = 0; i < formatedTx.byJoinSplit.Count; i++)
+                        if (formatedTx.Outputs.Length > 0)
                         {
-                            if (formatedTx.Asset_ID(i) == Blockchain.UtilityToken.Hash)
-                            {
-                                v_pubNewSum += formatedTx.vPub_New(i);
-                            }
+                            AssetState asset = Blockchain.Default.GetAssetState(formatedTx.Outputs[0].AssetId);
+
+                            if (ret.ContainsKey(asset.AssetId))
+                                ret[asset.AssetId] += asset.AFee;
+                            else
+                                ret[asset.AssetId] = asset.AFee;
+                        }
+                        else
+                        {
+                            AssetState asset = Blockchain.Default.GetAssetState(((AnonymousContractTransaction)formatedTx).Asset_ID(0));
+                            if (ret.ContainsKey(asset.AssetId))
+                                ret[asset.AssetId] += asset.AFee;
+                            else
+                                ret[asset.AssetId] = asset.AFee;
                         }
                     }
                 }
 
-                Fixed8 anonymousFee = v_pubNewSum - outAmount;
-                Fixed8 totalQrgFee = normalFee + anonymousFee;
-                Transaction[] feeTxs = transactions.Where(p => p.Type != TransactionType.MinerTransaction && p.Type != TransactionType.ClaimTransaction).ToArray();
+                Transaction[] invocationTxs = transactions.Where(p => p.Type == TransactionType.InvocationTransaction).ToArray();
+
+                foreach (var tx in invocationTxs)
+                {
+                    if (ret.ContainsKey(Blockchain.UtilityToken.Hash))
+                    {
+                        ret[Blockchain.UtilityToken.Hash] += ((InvocationTransaction) tx).Gas;
+                    }
+                    else
+                    {
+                        ret[Blockchain.UtilityToken.Hash] = ((InvocationTransaction)tx).Gas;
+                    }
+                }
+
+                Transaction[] issueTxs = transactions.Where(p => p.Type == TransactionType.IssueTransaction).ToArray();
+
+                foreach (var tx in issueTxs)
+                {
+                    IssueTransaction tempTx = (IssueTransaction)tx;
+                    if (ret.ContainsKey(Blockchain.UtilityToken.Hash))
+                    {
+                        ret[Blockchain.UtilityToken.Hash] += tempTx.NetworkFee + tempTx.SystemFee;
+                    }
+                    else
+                    {
+                        ret[Blockchain.UtilityToken.Hash] = tempTx.NetworkFee + tempTx.SystemFee;
+                    }
+                }
+
+                Transaction[] feeTxs = transactions.Where(p => p.Type != TransactionType.MinerTransaction 
+                                                            && p.Type != TransactionType.ClaimTransaction 
+                                                            && p.Type != TransactionType.AnonymousContractTransaction 
+                                                            && p.Type != TransactionType.RingConfidentialTransaction 
+                                                            && p.Type != TransactionType.InvocationTransaction 
+                                                            && p.Type != TransactionType.IssueTransaction).ToArray();
 
                 foreach (var tx in feeTxs)
                 {
                     Dictionary<UInt256, Fixed8> fee = new Dictionary<UInt256, Fixed8>();
-                    if (tx.Type != TransactionType.AnonymousContractTransaction)
-                    {
-                        foreach (var txOut in tx.Outputs)
-                        {
-                            if (txOut.AssetId != Blockchain.GoverningToken.Hash)
-                            {
-                                if (!fee.ContainsKey(txOut.AssetId))
-                                {
-                                    AssetState asset = Blockchain.Default.GetAssetState(txOut.AssetId);
-                                    fee[txOut.AssetId] = asset.Fee;
-                                }
-                            }
-                        }
-                    }
-                    else if (tx.Type == TransactionType.AnonymousContractTransaction && tx.Inputs.Length > 0)
-                    {
-                        var atx = tx as AnonymousContractTransaction;
-                        
-                        for (int i = 0; i < atx.byJoinSplit.Count; i++)
-                        {
-                            if (atx.Asset_ID(i) != Blockchain.GoverningToken.Hash)
-                            {
-                                if (!fee.ContainsKey(atx.Asset_ID(i)))
-                                {
-                                    AssetState asset = Blockchain.Default.GetAssetState(atx.Asset_ID(i));
-                                    fee[asset.AssetId] = asset.Fee;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var atx = tx as AnonymousContractTransaction;
 
-                        for (int i = 0; i < atx.byJoinSplit.Count; i++)
-                        {
-                            if (atx.Asset_ID(i) != Blockchain.GoverningToken.Hash)
-                            {
-                                if (!fee.ContainsKey(atx.Asset_ID(i)))
-                                {
-                                    AssetState asset = Blockchain.Default.GetAssetState(atx.Asset_ID(i));
-                                    fee[asset.AssetId] = asset.AFee;
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (var key in fee.Keys)
+                    foreach (var txOut in tx.Outputs)
                     {
-                        if (ret.ContainsKey(key))
+                        if (!ret.ContainsKey(txOut.AssetId))
                         {
-                            ret[key] += fee[key];
+                            ret[txOut.AssetId] = txOut.Fee;
                         }
                         else
                         {
-                            ret[key] = fee[key];
+                            ret[txOut.AssetId] += txOut.Fee;
                         }
                     }
-                }
-
-                Fixed8 qrgAssetFee = ret.Sum(p => p.Value);
-
-                if (ret.ContainsKey(Blockchain.UtilityToken.Hash))
-                {
-                    ret[Blockchain.UtilityToken.Hash] = ret[Blockchain.UtilityToken.Hash] + totalQrgFee - qrgAssetFee;
-                }
-                else
-                {
-                    ret[Blockchain.UtilityToken.Hash] = totalQrgFee - qrgAssetFee;
                 }
             }
 
-            #endregion
-
-            #region Calculate QRS Fee
-            {
-                Transaction[] ts = transactions.Where(p => p.Type != TransactionType.MinerTransaction && p.Type != TransactionType.ClaimTransaction && p.Type != TransactionType.AnonymousContractTransaction).ToArray();
-                Fixed8 amount_in = ts.SelectMany(p => p.References.Values.Where(o => o.AssetId == Blockchain.GoverningToken.Hash)).Sum(p => p.Value);
-                Fixed8 amount_out = ts.SelectMany(p => p.Outputs.Where(o => o.AssetId == Blockchain.GoverningToken.Hash)).Sum(p => p.Value);
-                Fixed8 amount_sysfee = ts.Sum(p => p.SystemFee);
-                Fixed8 normalFee = amount_in - amount_out;
-
-                Transaction[] ats = transactions.Where(p => p.Type == TransactionType.AnonymousContractTransaction && p.Inputs.Length == 0).ToArray();
-                Fixed8 v_pubNewSum = Fixed8.Zero;
-                Fixed8 outAmount = ats.SelectMany(p => p.Outputs.Where(o => o.AssetId == Blockchain.GoverningToken.Hash)).Sum(p => p.Value);
-
-                foreach (var atx in ats)
-                {
-                    if (atx is AnonymousContractTransaction)
-                    {
-                        var formatedTx = atx as AnonymousContractTransaction;
-                        for (int i = 0; i < formatedTx.byJoinSplit.Count; i++)
-                        {
-                            if (formatedTx.Asset_ID(i) == Blockchain.GoverningToken.Hash)
-                            {
-                                v_pubNewSum += formatedTx.vPub_New(i);
-                            }
-                        }
-                    }
-                }
-
-                Fixed8 anonymousFee = v_pubNewSum - outAmount;
-                Fixed8 totalQrsFee = normalFee + anonymousFee;
-                Transaction[] feeTxs = transactions.Where(p => p.Type != TransactionType.MinerTransaction && p.Type != TransactionType.ClaimTransaction).ToArray();
-
-                foreach (var tx in feeTxs)
-                {
-                    Dictionary<UInt256, Fixed8> fee = new Dictionary<UInt256, Fixed8>();
-                    if (tx.Type != TransactionType.AnonymousContractTransaction)
-                    {
-                        foreach (var txOut in tx.Outputs)
-                        {
-                            if (txOut.AssetId == Blockchain.GoverningToken.Hash)
-                            {
-                                if (!fee.ContainsKey(txOut.AssetId))
-                                {
-                                    AssetState asset = Blockchain.Default.GetAssetState(txOut.AssetId);
-                                    fee[txOut.AssetId] = asset.Fee;
-                                }
-                            }
-                        }
-                    }
-                    else if (tx.Type == TransactionType.AnonymousContractTransaction && tx.Inputs.Length > 0)
-                    {
-                        var atx = tx as AnonymousContractTransaction;
-
-                        for (int i = 0; i < atx.byJoinSplit.Count; i++)
-                        {
-                            if (atx.Asset_ID(i) == Blockchain.GoverningToken.Hash)
-                            {
-                                if (!fee.ContainsKey(atx.Asset_ID(i)))
-                                {
-                                    AssetState asset = Blockchain.Default.GetAssetState(atx.Asset_ID(i));
-                                    fee[asset.AssetId] = asset.Fee;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var atx = tx as AnonymousContractTransaction;
-
-                        for (int i = 0; i < atx.byJoinSplit.Count; i++)
-                        {
-                            if (atx.Asset_ID(i) == Blockchain.GoverningToken.Hash)
-                            {
-                                if (!fee.ContainsKey(atx.Asset_ID(i)))
-                                {
-                                    AssetState asset = Blockchain.Default.GetAssetState(atx.Asset_ID(i));
-                                    fee[asset.AssetId] = asset.AFee;
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (var key in fee.Keys)
-                    {
-                        if (ret.ContainsKey(key))
-                        {
-                            ret[key] += fee[key];
-                        }
-                        else
-                        {
-                            ret[key] = fee[key];
-                        }
-                    }
-                }
-
-                Fixed8 qrsAssetFee = ret.Sum(p => p.Value);
-
-                if (ret.ContainsKey(Blockchain.GoverningToken.Hash))
-                {
-                    ret[Blockchain.GoverningToken.Hash] = ret[Blockchain.UtilityToken.Hash] + totalQrsFee - qrsAssetFee;
-                }
-                else
-                {
-                    ret[Blockchain.GoverningToken.Hash] = totalQrsFee - qrsAssetFee;
-                }
-            }
             #endregion
 
             Dictionary<UInt256, Fixed8> retFees = new Dictionary<UInt256, Fixed8>();
@@ -380,15 +269,30 @@ namespace Pure.Core
                         Fixed8 consensusFee = Fixed8.Zero;
                         Fixed8 assetOwnerFee = Fixed8.Zero;
 
-                        if (assetFee[key] <= Fixed8.One)
+                        if (assetFee[key] <= Fixed8.Satoshi * 10000000)
                         {
-                            consensusFee = assetFee[key] * 3 / 10;
-                            assetOwnerFee = assetFee[key] * 7 / 10;
+                            consensusFee = assetFee[key] * 8 / 10;
+                            assetOwnerFee = assetFee[key] * 2 / 10;
                         }
-                        else if (assetFee[key] > Fixed8.One * 1)
+                        else if (assetFee[key] < Fixed8.FromDecimal(1))
                         {
-                            consensusFee = assetFee[key] * 4 / 10;
-                            assetOwnerFee = assetFee[key] * 6 / 10;
+                            consensusFee = assetFee[key] * 75 / 100;
+                            assetOwnerFee = assetFee[key] * 25 / 100;
+                        }
+                        else if (assetFee[key] < Fixed8.FromDecimal(5))
+                        {
+                            consensusFee = assetFee[key] * 7 / 10;
+                            assetOwnerFee = assetFee[key] * 3 / 10;
+                        }
+                        else if (assetFee[key] < Fixed8.FromDecimal(10))
+                        {
+                            consensusFee = assetFee[key] * 65 / 100;
+                            assetOwnerFee = assetFee[key] * 35 / 100;
+                        }
+                        else
+                        {
+                            consensusFee = assetFee[key] * 6 / 10;
+                            assetOwnerFee = assetFee[key] * 4 / 10;
                         }
 
                         if (tx_gen?.Outputs.Where(p => p.ScriptHash == asset.FeeAddress).Sum(p => p.Value) != assetOwnerFee) return false;

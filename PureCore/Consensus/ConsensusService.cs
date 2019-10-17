@@ -118,7 +118,7 @@ namespace Pure.Consensus
                 {
                     TransactionOutput output = new TransactionOutput
                     {
-                        AssetId = Blockchain.GoverningToken.Hash,
+                        AssetId = Blockchain.UtilityToken.Hash,
                         Value = amount_netfee[key],
                         ScriptHash = wallet.GetChangeAddress()
                     };
@@ -153,15 +153,30 @@ namespace Pure.Consensus
                     Fixed8 consensusFee = Fixed8.Zero;
                     Fixed8 assetOwnerFee = Fixed8.Zero;
 
-                    if (amount_netfee[key] <= Fixed8.One)
+                    if (amount_netfee[key] <= Fixed8.Satoshi * 10000000)
                     {
-                        consensusFee = amount_netfee[key] * 3 / 10;
-                        assetOwnerFee = amount_netfee[key] * 7 / 10;
+                        consensusFee = amount_netfee[key] * 8 / 10;
+                        assetOwnerFee = amount_netfee[key] * 2 / 10;
                     }
-                    else if (amount_netfee[key] > Fixed8.One * 1)
+                    else if (amount_netfee[key] < Fixed8.FromDecimal(1))
                     {
-                        consensusFee = amount_netfee[key] * 4 / 10;
-                        assetOwnerFee = amount_netfee[key] * 6 / 10;
+                        consensusFee = amount_netfee[key] * 75 / 100;
+                        assetOwnerFee = amount_netfee[key] * 25 / 100;
+                    }
+                    else if (amount_netfee[key] < Fixed8.FromDecimal(5))
+                    {
+                        consensusFee = amount_netfee[key] * 7 / 10;
+                        assetOwnerFee = amount_netfee[key] * 3 / 10;
+                    }
+                    else if (amount_netfee[key] < Fixed8.FromDecimal(10))
+                    {
+                        consensusFee = amount_netfee[key] * 65 / 100;
+                        assetOwnerFee = amount_netfee[key] * 35 / 100;
+                    }
+                    else
+                    {
+                        consensusFee = amount_netfee[key] * 6 / 10;
+                        assetOwnerFee = amount_netfee[key] * 4 / 10;
                     }
 
                     bool isNew = true;

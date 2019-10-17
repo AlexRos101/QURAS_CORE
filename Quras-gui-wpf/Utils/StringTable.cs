@@ -129,6 +129,7 @@ namespace Quras_gui_wpf.Utils
             dic_en.Add("STR_HI_TO", "To");
             dic_en.Add("STR_HI_UNKNOWN", "Unknown");
             dic_en.Add("STR_HI_ANONYMOUS", "Anonymous");
+            dic_en.Add("STR_HI_RINGCT", "RingCT");
 
             // Receiving Page
             dic_en.Add("STR_RP_AMOUNT", "Amount");
@@ -286,7 +287,7 @@ namespace Quras_gui_wpf.Utils
             dic_en.Add("STR_AAP_TITLE", "Add asset");
             dic_en.Add("STR_AAP_REG_ASSET_TITLE", "Register Asset");
             dic_en.Add("STR_AAP_REG_COMMENT1", "You can register your asset on blockchain" + System.Environment.NewLine + "If you want to launch your own asset, you have to register this before.");
-            dic_en.Add("STR_AAP_REG_COMMENT2", "* To register asset, you must pay 10,000 XQG token. *");
+            dic_en.Add("STR_AAP_REG_COMMENT2", "* To register asset, you must pay 4,990 XQG token. *");
             dic_en.Add("STR_AAP_FH_ASSET_TYPE", "Asset Type");
             dic_en.Add("STR_AAP_FC_ASSET_TYPE", "Please choose your token type as you want to create.");
             dic_en.Add("STR_AAP_FH_ASSET_NAME", "Asset Name");
@@ -338,7 +339,7 @@ namespace Quras_gui_wpf.Utils
 
             dic_en.Add("STR_AAP_ISSUE_ASSET_TITLE", "Issue asset");
             dic_en.Add("STR_AAP_ISSUE_ASSET_COMMENT", "You can issue asset that registered on blockchain before." + System.Environment.NewLine + "After issue asset, then you can use this asset to send.");
-            dic_en.Add("STR_AAP_ISSUE_ASSET_COMMENT1", "* To issue asset, you must pay 500 XQG token. *");
+            dic_en.Add("STR_AAP_ISSUE_ASSET_COMMENT1", "* To issue asset, you must pay 1 XQG token. *");
 
             dic_en.Add("STR_AAP_ISSUE_ASSET_ID", "Asset ID");
             dic_en.Add("STR_AAP_ISSUE_ASSET_ID_COMMENT", "Please input your asset id that you registered before.");
@@ -385,6 +386,7 @@ namespace Quras_gui_wpf.Utils
 
             dic_en.Add("STR_SP_SPENDABLE", "Spendable : {0} {1}");
             dic_en.Add("STR_SP_FEE", "Fee : {0} {1}  ~  {2} {3}");
+            dic_en.Add("STR_SP_AFEE", "Fee : {0} {1}");
 
             dic_en.Add("STR_WALLET_REPAIR", "CM Tree Error, repair your wallet!");
             dic_en.Add("STR_SEND_COIN_ERROR_WAITING", "Please wait till finishing the previous tx.");
@@ -454,6 +456,7 @@ namespace Quras_gui_wpf.Utils
             dic_jp.Add("STR_HI_TO", "出金");
             dic_jp.Add("STR_HI_UNKNOWN", "道の");
             dic_jp.Add("STR_HI_ANONYMOUS", "匿名");
+            dic_jp.Add("STR_HI_RINGCT", "RingCT");
 
             // Receiving Page
             dic_jp.Add("STR_RP_AMOUNT", "金額");
@@ -608,7 +611,7 @@ namespace Quras_gui_wpf.Utils
             dic_jp.Add("STR_AAP_TITLE", "資産を追加");
             dic_jp.Add("STR_AAP_REG_ASSET_TITLE", "資産を登録する");
             dic_jp.Add("STR_AAP_REG_COMMENT1", "あなたはあなたの資産をブロックチェーンに登録することができます" + System.Environment.NewLine + "あなた自身の資産を起動したい場合は、事前にこれを登録する必要があります。");
-            dic_jp.Add("STR_AAP_REG_COMMENT2", "* 資産を登録するには、10,000 XQGトークンを支払う必要があります。 *");
+            dic_jp.Add("STR_AAP_REG_COMMENT2", "* 資産を登録するには、4,990 XQGトークンを支払う必要があります。 *");
             dic_jp.Add("STR_AAP_FH_ASSET_TYPE", "資産タイプ");
             dic_jp.Add("STR_AAP_FC_ASSET_TYPE", "作成したいトークンの種類を選択してください。");
             dic_jp.Add("STR_AAP_FH_ASSET_NAME", "資産名");
@@ -659,7 +662,7 @@ namespace Quras_gui_wpf.Utils
 
             dic_jp.Add("STR_AAP_ISSUE_ASSET_TITLE", "発行資産");
             dic_jp.Add("STR_AAP_ISSUE_ASSET_COMMENT", "あなたは以前にブロックチェーンに登録された資産を発行することができます。" + System.Environment.NewLine + "資産の発行後、この資産を使用して送信できます。");
-            dic_jp.Add("STR_AAP_ISSUE_ASSET_COMMENT1", "*資産を発行するには、500 XQGトークンを支払わなければなりません。*");
+            dic_jp.Add("STR_AAP_ISSUE_ASSET_COMMENT1", "*資産を発行するには、1 XQGトークンを支払わなければなりません。*");
 
             dic_jp.Add("STR_AAP_ISSUE_ASSET_ID", "資産ID");
             dic_jp.Add("STR_AAP_ISSUE_ASSET_ID_COMMENT", "以前に登録したアセットIDを入力してください。");
@@ -706,6 +709,7 @@ namespace Quras_gui_wpf.Utils
 
             dic_jp.Add("STR_SP_SPENDABLE", "柔軟な : {0} {1}");
             dic_jp.Add("STR_SP_FEE", "料金 : {0} {1}  ~  {2} {3}");
+            dic_jp.Add("STR_SP_AFEE", "料金 : {0} {1}");
             dic_jp.Add("STR_WALLET_REPAIR", "CMツリーのエラー、あなたの財布を修復！");
             dic_jp.Add("STR_SEND_COIN_ERROR_WAITING", "TX前の仕上げまで待ってください。");
             dic_jp.Add("STR_WALLET_DUPPLICATION_ERROR", "財布はもう走っています。");

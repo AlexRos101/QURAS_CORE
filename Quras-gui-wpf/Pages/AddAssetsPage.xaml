@@ -48,7 +48,7 @@
                                 If you want to launch your own asset, you have to register this before.
                             </TextBlock>
                             <TextBlock x:Name="TxbRegComment2" VerticalAlignment="Bottom" Margin="8,4,5,5" Grid.Row="1" FontSize="12" Foreground="Red" TextAlignment="Left" FontWeight="Normal" FontFamily="SF Pro Display">
-                                * To register asset, you must pay 10,000 XQG token. *
+                                * To register asset, you must pay 4,990 XQG token. *
                             </TextBlock>
                             <!-- Asset Types Field-->
                             <Grid Margin="5,5,15,0">
@@ -430,7 +430,7 @@
                                 After issue asset, then you can use this asset to send.
                             </TextBlock>
                             <TextBlock x:Name="TxbIssueAssetComment2" VerticalAlignment="Bottom" Margin="8,4,5,5" Grid.Row="1" FontSize="12" Foreground="Red" TextAlignment="Left" FontWeight="Normal" FontFamily="SF Pro Display">
-                                * To issue asset, you must pay 500 XQG token. *
+                                * To issue asset, you must pay 1 XQG token. *
                             </TextBlock>
 
                             <!-- Asset ID Field-->

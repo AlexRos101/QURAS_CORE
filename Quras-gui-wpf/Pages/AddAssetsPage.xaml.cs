@@ -390,15 +390,13 @@ namespace Quras_gui_wpf.Pages
             UInt160 admin = Wallet.ToScriptHash(cmbAssetAdmin.Text);
             UInt160 issuer = Wallet.ToScriptHash(cmbAssetIssuer.Text);
             Fixed8 AFee = Fixed8.Parse(TxbAssetAFee.Text);
-            Fixed8 AFeeMin = Fixed8.Parse(TxbAssetAFee.Text);
-            Fixed8 AFeeMax = Fixed8.Parse(TxbAssetAFee.Text);
             Fixed8 TFee = Fixed8.Zero;
             Fixed8 TFeeMin = Fixed8.Parse(TxbAssetTFeeMin.Text);
             Fixed8 TFeeMax = Fixed8.Parse(TxbAssetTFeeMax.Text);
             UInt160 feeAddress = Wallet.ToScriptHash(TxbAssetFeeAddress.Text);
             using (ScriptBuilder sb = new ScriptBuilder())
             {
-                sb.EmitSysCall("Pure.Asset.Create", asset_type, name, amount, precision, owner, admin, issuer, AFee, AFeeMin, AFeeMax, TFee, TFeeMin, TFeeMax, feeAddress);
+                sb.EmitSysCall("Pure.Asset.Create", asset_type, name, amount, precision, owner, admin, issuer, AFee, TFee, TFeeMin, TFeeMax, feeAddress);
                 return new InvocationTransaction
                 {
                     Attributes = new[]
