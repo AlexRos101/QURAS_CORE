@@ -33,6 +33,12 @@ namespace Pure.Wallets
             }
         }
 
+        public void SetTrackState(TrackState state)
+        {
+            ITrackable<RCTCoinReference> _this = this;
+            _this.TrackState = state;
+        }
+
         public bool Equals(RCTCoin other)
         {
             if (ReferenceEquals(this, other)) return true;

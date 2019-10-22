@@ -45,6 +45,7 @@ namespace Pure.Wallets
         private readonly TrackableCollection<CoinReference, Coin> coins;
         private readonly TrackableCollection<JSCoinReference, JSCoin> jscoins;
         private readonly TrackableCollection<RCTCoinReference, RCTCoin> rctcoins;
+        private readonly List<RCTCoin> rctcoinCache;
         private readonly IntPtr cmMerkleTree;
 
         private uint current_height;
@@ -73,6 +74,7 @@ namespace Pure.Wallets
                     this.coins = new TrackableCollection<CoinReference, Coin>();
                     this.jscoins = new TrackableCollection<JSCoinReference, JSCoin>();
                     this.rctcoins = new TrackableCollection<RCTCoinReference, RCTCoin>();
+                    this.rctcoinCache = new List<RCTCoin>();
                     this.current_height = Blockchain.Default?.HeaderHeight + 1 ?? 0;
                     //this.current_height = 0;
                     using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
@@ -112,6 +114,7 @@ namespace Pure.Wallets
                         this.coins = new TrackableCollection<CoinReference, Coin>(LoadCoins());
                         this.jscoins = new TrackableCollection<JSCoinReference, JSCoin>(LoadJSCoins());
                         this.rctcoins = new TrackableCollection<RCTCoinReference, RCTCoin>(LoadRCTCoins());
+                        this.rctcoinCache = new List<RCTCoin>();
                         this.current_height = LoadStoredData("Height").ToUInt32(0);
 
                         cmMerkleTree = SnarkDllApi.CmMerkleTree_Create();
@@ -142,6 +145,7 @@ namespace Pure.Wallets
                     this.coins = new TrackableCollection<CoinReference, Coin>();
                     this.jscoins = new TrackableCollection<JSCoinReference, JSCoin>();
                     this.rctcoins = new TrackableCollection<RCTCoinReference, RCTCoin>();
+                    this.rctcoinCache = new List<RCTCoin>();
                     this.current_height = Blockchain.Default?.HeaderHeight + 1 ?? 0;
                     using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
                     {
@@ -176,6 +180,7 @@ namespace Pure.Wallets
                         this.coins = new TrackableCollection<CoinReference, Coin>(LoadCoins());
                         this.jscoins = new TrackableCollection<JSCoinReference, JSCoin>(LoadJSCoins());
                         this.rctcoins = new TrackableCollection<RCTCoinReference, RCTCoin>(LoadRCTCoins());
+                        this.rctcoinCache = new List<RCTCoin>();
                         this.current_height = LoadStoredData("Height").ToUInt32(0);
                     }
                     catch (FormatException ex)
@@ -680,6 +685,14 @@ namespace Pure.Wallets
             {
                 foreach (RCTCoin coin in rctcoins)
                     yield return coin;
+            }
+        }
+
+        public List<RCTCoin> GetRCTCoinCache()
+        {
+            lock (rctcoinCache)
+            {
+                return rctcoinCache;
             }
         }
 
@@ -2363,47 +2376,29 @@ namespace Pure.Wallets
                                                         ScriptHash = Contract.CreateRingSignatureRedeemScript(rctKey.PayloadPubKey, rctKey.ViewPubKey).ToScriptHash()
                                                     };// (rtx.RingCTSig[i].AssetID, amount, rtx.RingCTSig[i].outPK[j].dest);
 
-                                                    int k;
+                                                    int k = -1;
 
-                                                    if (rctcoins.Contains(reference) && rctcoins[reference].State == CoinState.Unconfirmed)
+                                                    for (k = 0; k < rctcoinCache.Count; k ++)
                                                     {
-                                                        rctcoins[reference].State |= CoinState.Confirmed;
-                                                        rctcoins[reference].Output = output;
-                                                    }
-                                                    else
-                                                    {
-                                                        for (k = 0; k < rctcoins.Count; k++)
-                                                            if (rctcoins[k].Reference.TxRCTHash.Equals(reference.TxRCTHash))
-                                                            {
-                                                                if (rctcoins[k].State == CoinState.Unconfirmed)
-                                                                {
-                                                                    break;
-                                                                }
-                                                                else if (rctcoins[k].State == CoinState.Confirmed && rctcoins[k].Output.AssetId == rtx.RingCTSig[i].AssetID)
-                                                                {
-                                                                    k = -1;
-                                                                    break;
-                                                                }
-                                                            }
-                                                        if (k != -1 && !rctcoins.Contains(reference))
+                                                        if (rctcoinCache[k].Reference.TxRCTHash.ToString() == reference.TxRCTHash.ToString()
+                                                             && rctcoinCache[k].Output.AssetId.ToString() == output.AssetId.ToString() 
+                                                             && (rctcoinCache[k].State & CoinState.Spent) == 0)
                                                         {
-                                                            if (k < rctcoins.Count)
-                                                            {
-                                                                rctcoins[k].State |= CoinState.Spent;
-                                                                rctcoins[k].Output.Value = Fixed8.Zero;
-                                                            }
-                                                           
-                                                            rctcoins.Add(new RCTCoin
-                                                            {
-                                                                Reference = reference,
-                                                                Output = output,
-                                                                State = CoinState.Confirmed
-                                                            });
+                                                            rctcoinCache.RemoveAt(k);
+                                                            k--;
                                                         }
                                                     }
-                                                    
 
-                                                    
+                                                    rctcoins.Add(new RCTCoin
+                                                    {
+                                                        Reference = reference,
+                                                        Output = output,
+                                                        State = CoinState.Confirmed
+                                                    });
+
+
+
+
 
                                                     /*if (rtx.RingCTSig[i].mixRing.Count > 1)
                                                         foreach (RCTCoin coins in rctcoins)
@@ -2973,12 +2968,12 @@ namespace Pure.Wallets
                                                 }
                                                 else
                                                 {
-                                                    rctcoins.Add(new RCTCoin
+                                                    rctcoinCache.Add(new RCTCoin
                                                     {
                                                         Reference = reference,
                                                         Output = output,
-                                                        State = CoinState.Unconfirmed
-                                                    });
+                                                        State = CoinState.Confirmed
+                                                    }); 
                                                 }
 
                                             }

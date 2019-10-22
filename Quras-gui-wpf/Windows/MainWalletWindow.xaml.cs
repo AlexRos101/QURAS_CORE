@@ -502,6 +502,7 @@ namespace Quras_gui_wpf.Windows
                         IEnumerable<Coin> coins = Constant.CurrentWallet?.GetCoins().Where(p => !p.State.HasFlag(CoinState.Spent)) ?? Enumerable.Empty<Coin>();
                         IEnumerable<JSCoin> jscoins = Constant.CurrentWallet?.GetJSCoins().Where(p => !p.State.HasFlag(CoinState.Spent)) ?? Enumerable.Empty<JSCoin>();
                         IEnumerable<RCTCoin> rctcoins = Constant.CurrentWallet?.GetRCTCoins().Where(p => !p.State.HasFlag(CoinState.Spent)) ?? Enumerable.Empty<RCTCoin>();
+                        List<RCTCoin> rctCoinCache = Constant.CurrentWallet?.GetRCTCoinCache();
 
                         Fixed8 bonus_available = Blockchain.CalculateBonus(Constant.CurrentWallet.GetUnclaimedCoins().Select(p => p.Reference));
                         Fixed8 bonus_unavailable = Blockchain.CalculateBonus(coins.Where(p => p.State.HasFlag(CoinState.Confirmed) && p.Output.AssetId.Equals(Blockchain.GoverningToken.Hash)).Select(p => p.Reference), Blockchain.Default.Height + 1);
@@ -585,6 +586,15 @@ namespace Quras_gui_wpf.Windows
                             qrg_total += qrg;
                             qrg_total += js_qrg;
                             qrg_total += rct_qrg;
+                        }
+
+                        foreach(RCTCoin coin in rctCoinCache)
+                        {
+                            if (coin.Output.AssetId == Blockchain.GoverningToken.Hash)
+                                qrs_total += coin.Output.Value;
+                            else if (coin.Output.AssetId == Blockchain.UtilityToken.Hash)
+                                qrg_total += coin.Output.Value;
+                               
                         }
 
                         TxbQRSBalance.Text = Helper.FormatNumber(qrs_total.ToString());
