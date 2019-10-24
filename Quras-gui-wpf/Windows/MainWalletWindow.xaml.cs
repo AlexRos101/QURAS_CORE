@@ -160,7 +160,7 @@ namespace Quras_gui_wpf.Windows
         private void InitInstance()
         {
             engineTimer = new DispatcherTimer();
-            engineTimer.Tick += dispatcherTimer_Tick;
+            engineTimer.Tick += this.dispatcherTimer_Tick;
             engineTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             engineTimer.Start();
 
