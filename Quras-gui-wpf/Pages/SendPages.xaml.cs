@@ -438,7 +438,7 @@ namespace Quras_gui_wpf.Pages
                     return;
                 }
 
-                Fixed8 fee = Fixed8.Satoshi * Convert.ToInt32(100000000 * Convert.ToDouble(txbFeeAmount.Text));
+                Fixed8 fee = Fixed8.Satoshi * Convert.ToInt64(100000000 * Convert.ToDouble(txbFeeAmount.Text));
 
                 if (fromAddress == null)
                 {
