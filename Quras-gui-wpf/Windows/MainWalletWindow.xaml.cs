@@ -283,9 +283,9 @@ namespace Quras_gui_wpf.Windows
         {
             if (Constant.CurrentWallet != null)
             {
-                Constant.CurrentWallet.BalanceChanged -= CurrentWallet_BalanceChanged;
-                Constant.CurrentWallet.TransactionsChanged -= CurrentWallet_TransactionsChanged;
-                Constant.CurrentWallet.ErrorsOccured -= CurrentWallet_ErrorsOccured;
+                Constant.CurrentWallet.BalanceChanged -= this.CurrentWallet_BalanceChanged;
+                Constant.CurrentWallet.TransactionsChanged -= this.CurrentWallet_TransactionsChanged;
+                Constant.CurrentWallet.ErrorsOccured -= this.CurrentWallet_ErrorsOccured;
                 Constant.CurrentWallet.Dispose();
             }
             Constant.CurrentWallet = wallet;
@@ -328,9 +328,9 @@ namespace Quras_gui_wpf.Windows
                 }
                 
                 CurrentWallet_TransactionsChanged(null, Constant.CurrentWallet.LoadTransactions());
-                Constant.CurrentWallet.BalanceChanged += CurrentWallet_BalanceChanged;
-                Constant.CurrentWallet.TransactionsChanged += CurrentWallet_TransactionsChanged;
-                Constant.CurrentWallet.ErrorsOccured += CurrentWallet_ErrorsOccured;
+                Constant.CurrentWallet.BalanceChanged += this.CurrentWallet_BalanceChanged;
+                Constant.CurrentWallet.TransactionsChanged += this.CurrentWallet_TransactionsChanged;
+                Constant.CurrentWallet.ErrorsOccured += this.CurrentWallet_ErrorsOccured;
             }
 
             if (Constant.CurrentWallet != null)

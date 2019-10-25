@@ -314,9 +314,9 @@ namespace Pure.UI
         {
             if (Program.CurrentWallet != null)
             {
-                Program.CurrentWallet.BalanceChanged -= CurrentWallet_BalanceChanged;
-                Program.CurrentWallet.TransactionsChanged -= CurrentWallet_TransactionsChanged;
-                Program.CurrentWallet.ErrorsOccured -= CurrentWallet_ErrorsOccured;
+                Program.CurrentWallet.BalanceChanged -= this.CurrentWallet_BalanceChanged;
+                Program.CurrentWallet.TransactionsChanged -= this.CurrentWallet_TransactionsChanged;
+                Program.CurrentWallet.ErrorsOccured -= this.CurrentWallet_ErrorsOccured;
                 Program.CurrentWallet.Dispose();
             }
             Program.CurrentWallet = wallet;
@@ -324,9 +324,9 @@ namespace Pure.UI
             if (Program.CurrentWallet != null)
             {
                 CurrentWallet_TransactionsChanged(null, Program.CurrentWallet.LoadTransactions());
-                Program.CurrentWallet.BalanceChanged += CurrentWallet_BalanceChanged;
-                Program.CurrentWallet.TransactionsChanged += CurrentWallet_TransactionsChanged;
-                Program.CurrentWallet.ErrorsOccured += CurrentWallet_ErrorsOccured;
+                Program.CurrentWallet.BalanceChanged += this.CurrentWallet_BalanceChanged;
+                Program.CurrentWallet.TransactionsChanged += this.CurrentWallet_TransactionsChanged;
+                Program.CurrentWallet.ErrorsOccured += this.CurrentWallet_ErrorsOccured;
             }
 
             changePasswordToolStripMenuItem.Enabled = Program.CurrentWallet != null;
