@@ -866,8 +866,11 @@ namespace Pure.Wallets
             {
                 for (int jsIndex = 0; jsIndex < ctx.byJoinSplit.Count; jsIndex ++)
                 {
-                    foreach (KeyPair key in GetKeys())
+                    foreach (KeyPairBase basekey in GetKeys())
                     {
+                        if (basekey is StealthKeyPair)
+                            continue;
+                        KeyPair key = (KeyPair)basekey;
                         if (key.nVersion == KeyType.Anonymous)
                         {
                             using (key.Decrypt())
@@ -2378,6 +2381,23 @@ namespace Pure.Wallets
 
                                                     int k = -1;
 
+                                                    for (k = 0; k < rtx.RingCTSig[i].mixRing.Count; k++)
+                                                    {
+                                                        for (int l = 0; l < rtx.RingCTSig[i].mixRing[k].Count; l++)
+                                                        {
+                                                            foreach (RCTCoin coins in rctcoins)
+                                                            {
+                                                                if ((coins.State & CoinState.Spent) == 0 && coins.Reference.PrevHash == rtx.RingCTSig[i].mixRing[k][l].txHash && coins.Output.AssetId == rtx.RingCTSig[i].AssetID)
+                                                                {
+                                                                    coins.State |= CoinState.Spent; l = rtx.RingCTSig[i].mixRing[k].Count - 1; k = rtx.RingCTSig[i].mixRing.Count - 1;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    k = -1;
+                                                    
                                                     for (k = 0; k < rctcoinCache.Count; k ++)
                                                     {
                                                         if (rctcoinCache[k].Reference.TxRCTHash.ToString() == reference.TxRCTHash.ToString()
@@ -2429,8 +2449,11 @@ namespace Pure.Wallets
                                 blocks_commitments.Add(atx.Commitments(jsIndex)[0]);
                                 blocks_commitments.Add(atx.Commitments(jsIndex)[1]);
 
-                                foreach (KeyPair key in GetKeys())
+                                foreach (KeyPairBase basekey in GetKeys())
                                 {
+                                    if (basekey is StealthKeyPair)
+                                        continue;
+                                    KeyPair key = (KeyPair)basekey;
                                     if (key.nVersion == KeyType.Anonymous)
                                     {
                                         using (key.Decrypt())
