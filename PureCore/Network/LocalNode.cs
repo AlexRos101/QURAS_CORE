@@ -110,8 +110,8 @@ namespace Pure.Network
             if (Blockchain.Default == null) return false;
             lock (mem_pool)
             {
-                if (mem_pool.ContainsKey(tx.Hash)) return false;
-                if (Blockchain.Default.ContainsTransaction(tx.Hash)) return false;
+                if (mem_pool.ContainsKey(tx.Hash)) return false; 
+                if (Blockchain.Default.ContainsTransaction(tx.Hash)) return false; 
                 if (!tx.Verify(mem_pool.Values)) return false;
                 mem_pool.Add(tx.Hash, tx);
                 CheckMemPool();

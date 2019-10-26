@@ -22,10 +22,7 @@ namespace Pure.Core
                     if (!fee.ContainsKey(output.AssetId) && output.AssetId != Blockchain.GoverningToken.Hash && output.AssetId != Blockchain.UtilityToken.Hash)
                     {
                         AssetState asset = Blockchain.Default.GetAssetState(output.AssetId);
-                        //if (asset.AssetId == Blockchain.UtilityToken.Hash)      
-                        //{
-                            fee[output.AssetId] = output.Fee;
-                        //}
+                        fee[output.AssetId] = output.Fee;
                     }
 
                     if (output.AssetId == Blockchain.UtilityToken.Hash)

@@ -107,16 +107,6 @@ namespace Quras_gui_wpf.Global
                     }
                 }
 
-                /*
-                if (tx is InvocationTransaction itx)
-                {
-                    using (InvokeContractDialog dialog = new InvokeContractDialog(itx))
-                    {
-                        if (dialog.ShowDialog() != DialogResult.OK) return;
-                        tx = dialog.GetTransaction();
-                    }
-                }
-                */
                 Helper.SignAndShowInformation(tx);
             }
             #endregion
@@ -163,19 +153,7 @@ namespace Quras_gui_wpf.Global
                         UInt256 anchor = new UInt256(byRoot);
 
                         tx = Constant.CurrentWallet.Perform_JoinSplit(ctx_, info, joinSplitPubKey_, joinSplitPrivKey_, (UInt256)asset.AssetId, w, anchor);
-
-                        /*
-                        int dstOffset = 0;
-                        byte[] byJsBody = new byte[ctx_.byJoinSplit.GetListLength()];
-                        for (int index = 0; index < ctx_.byJoinSplit.Count; index++)
-                        {
-                            Buffer.BlockCopy(ctx_.byJoinSplit[index], 0, byJsBody, dstOffset, ctx_.byJoinSplit[index].Length);
-                            dstOffset += ctx_.byJoinSplit[index].Length;
-                        }
-
-                        UInt256 jsHash = new UInt256(Crypto.Default.Hash256(byJsBody));
-                        */
-
+                        
                         ctx_.joinSplitSig = Sodium.PublicKeyAuth.SignDetached(ctx.JsHash.ToArray(), joinSplitPrivKey_);
 
                         if (!Sodium.PublicKeyAuth.VerifyDetached(ctx_.joinSplitSig, ctx.JsHash.ToArray(), joinSplitPubKey_.ToArray()))
@@ -547,20 +525,7 @@ namespace Quras_gui_wpf.Global
                         }
                     }
                     #endregion
-                    /*
-                    int dstOffset = 0;
-                    byte[] byJsBody = new byte[ctx.byJoinSplit.GetListLength()];
-                    for (int index = 0; index < ctx.byJoinSplit.Count; index++)
-                    {
-                        Buffer.BlockCopy(ctx.byJoinSplit[index], 0, byJsBody, dstOffset, ctx.byJoinSplit[index].Length);
-                        dstOffset += ctx.byJoinSplit[index].Length;
-                    }
-
-                    UInt256 jsHash = new UInt256(Crypto.Default.Hash256(byJsBody));
-                    */
-
-                    //UInt256 tmp_jsHash = ctx.JsHash;
-
+                    
                     ctx.joinSplitSig = Sodium.PublicKeyAuth.SignDetached(ctx.JsHash.ToArray(), joinSplitPrivKey_);
 
                     if (!Sodium.PublicKeyAuth.VerifyDetached(ctx.joinSplitSig, ctx.JsHash.ToArray(), joinSplitPubKey_.ToArray()))
@@ -907,20 +872,6 @@ namespace Quras_gui_wpf.Global
                         }
                     }
                     #endregion
-
-
-
-                    /*
-                    int dstOffset = 0;
-                    byte[] byJsBody = new byte[ctx.byJoinSplit.GetListLength()];
-                    for (int index = 0; index < ctx.byJoinSplit.Count; index++)
-                    {
-                        Buffer.BlockCopy(ctx.byJoinSplit[index], 0, byJsBody, dstOffset, ctx.byJoinSplit[index].Length);
-                        dstOffset += ctx.byJoinSplit[index].Length;
-                    }
-
-                    UInt256 jsHash = new UInt256(Crypto.Default.Hash256(byJsBody));
-                    */
 
                     ctx.joinSplitSig = Sodium.PublicKeyAuth.SignDetached(ctx.JsHash.ToArray(), joinSplitPrivKey_);
 

@@ -378,14 +378,7 @@ namespace Quras_gui_wpf.Pages
 
                 if (Wallet.GetAddressVersion(fromAddress) == Wallet.AnonymouseAddressVersion || Wallet.GetAddressVersion(fromAddress) == Wallet.StealthAddressVersion)
                 {
-                    /*if (asset.AssetType == AssetType.GoverningToken)
-                    {
-                        TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_FEE", iLang), asset.AFee.ToString(), asset.GetName(), asset.AFee.ToString(), asset.GetName());
-                    }
-                    else
-                    {*/
-                        TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_AFEE", iLang), Blockchain.UtilityToken.A_Fee.ToString(), "XQG");
-                    //}
+                    TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_AFEE", iLang), Blockchain.UtilityToken.A_Fee.ToString(), "XQG");
                     txbFeeAmount.IsEnabled = false;
                     txbFeeAmount.Text = Blockchain.UtilityToken.A_Fee.ToString();
                 }
@@ -402,14 +395,6 @@ namespace Quras_gui_wpf.Pages
                         TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_FEE", iLang), (asset.FeeMin).ToString(), "XQG", (asset.FeeMax).ToString(), "XQG");
                         txbFeeAmount.IsEnabled = true;
                     }
-                    /*if (asset.AssetType == AssetType.GoverningToken)
-                    {
-                        TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_FEE", iLang), asset.FeeMin.ToString(), asset.GetName(), asset.FeeMax.ToString(), asset.GetName());
-                    }
-                    else
-                    {*/
-                    //    TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_FEE", iLang), (asset.FeeMin).ToString(), "XQG", (asset.FeeMax).ToString(), "XQG");
-                    //}
                 }
 
                 if (tag != null)
@@ -499,14 +484,7 @@ namespace Quras_gui_wpf.Pages
 
                 if (Wallet.GetAddressVersion(fromAddress) == Wallet.AnonymouseAddressVersion || Wallet.GetAddressVersion(fromAddress) == Wallet.StealthAddressVersion)
                 {
-                    /*if (asset.AssetType == AssetType.GoverningToken)
-                    {
-                        TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_FEE", iLang), asset.AFee.ToString(), asset.GetName(), asset.AFee.ToString(), asset.GetName());
-                    }
-                    else
-                    {*/
                     TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_AFEE", iLang), Blockchain.UtilityToken.A_Fee.ToString(), "XQG");
-                    //}
                     txbFeeAmount.IsEnabled = false;
                     txbFeeAmount.Text = Blockchain.UtilityToken.A_Fee.ToString();
                 }
@@ -524,14 +502,6 @@ namespace Quras_gui_wpf.Pages
                         TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_FEE", iLang), (asset.FeeMin).ToString(), "XQG", (asset.FeeMax).ToString(), "XQG");
                         txbFeeAmount.IsEnabled = true;
                     }
-                    /*if (asset.AssetType == AssetType.GoverningToken)
-                    {
-                        TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_FEE", iLang), asset.FeeMin.ToString(), asset.GetName(), asset.FeeMax.ToString(), asset.GetName());
-                    }
-                    else
-                    {*/
-                    //    TxbFee.Text = String.Format(StringTable.GetInstance().GetString("STR_SP_FEE", iLang), (asset.FeeMin).ToString(), "XQG", (asset.FeeMax).ToString(), "XQG");
-                    //}
                 }
 
                 if (tag != null)

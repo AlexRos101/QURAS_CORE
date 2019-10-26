@@ -388,115 +388,11 @@ namespace Pure.Core
                 }
             }
 
-            if (result_other_fee > Fixed8.Zero/* || (QrsSystemFee > result_qrs_fee)*/ || (SystemFee > result_qrg_fee && assetFee > Fixed8.Zero))
+            if (result_other_fee > Fixed8.Zero || (SystemFee > result_qrg_fee && assetFee > Fixed8.Zero))
             {
                 return false;
             }
 
-            /*
-            if (qrsAssetFee == Fixed8.Zero)
-            {
-                if (SystemFee + assetFee > Fixed8.Zero && (results_destroy.Length == 0 || results_destroy[0].Amount < SystemFee + assetFee))
-                {
-                    if (Inputs.Length == 0 && byJoinSplit.Count > 0)
-                    {
-                        if (Outputs.Length == 0)
-                        {
-                            Fixed8 fee = Fixed8.Zero;
-                            for (int i = 0; i < byJoinSplit.Count; i++)
-                            {
-                                fee += vPub_New(i);
-                            }
-
-                            if (fee < SystemFee)
-                            {
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            Fixed8 fee = Fixed8.Zero;
-                            for (int i = 0; i < byJoinSplit.Count; i++)
-                            {
-                                fee += vPub_New(i);
-                            }
-
-                            for (int i = 0; i < Outputs.Length; i++)
-                            {
-                                fee -= Outputs[i].Value;
-                            }
-
-                            if (fee < SystemFee)
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                Fixed8 result_qrs_fee = Fixed8.Zero;
-                Fixed8 result_qrg_fee = Fixed8.Zero;
-                for (int i = 0; i < results_destroy.Length; i++)
-                {
-                    if (results_destroy[i].AssetId == Blockchain.GoverningToken.Hash)
-                    {
-                        result_qrs_fee = results_destroy[i].Amount;
-                    }
-                    else if (results_destroy[i].AssetId == Blockchain.UtilityToken.Hash)
-                    {
-                        result_qrg_fee = results_destroy[i].Amount;
-                    }
-                }
-
-                if (SystemFee + qrsAssetFee > Fixed8.Zero && result_qrs_fee < SystemFee + qrsAssetFee)
-                {
-                    if (Inputs.Length == 0 && byJoinSplit.Count > 0)
-                    {
-                        if (Outputs.Length == 0)
-                        {
-                            Fixed8 fee = Fixed8.Zero;
-                            for (int i = 0; i < byJoinSplit.Count; i++)
-                            {
-                                fee += vPub_New(i);
-                            }
-
-                            if (fee < SystemFee)
-                            {
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            Fixed8 fee = Fixed8.Zero;
-                            for (int i = 0; i < byJoinSplit.Count; i++)
-                            {
-                                fee += vPub_New(i);
-                            }
-
-                            for (int i = 0; i < Outputs.Length; i++)
-                            {
-                                fee -= Outputs[i].Value;
-                            }
-
-                            if (fee < SystemFee)
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
-            */
             TransactionResult[] results_issue = results.Where(p => p.Amount < Fixed8.Zero).ToArray();
             switch (Type)
             {
@@ -516,18 +412,6 @@ namespace Pure.Core
             }
             if (Attributes.Count(p => p.Usage == TransactionAttributeUsage.ECDH02 || p.Usage == TransactionAttributeUsage.ECDH03) > 1)
                 return false;
-
-            /*
-            int dstOffset = 0;
-            byte[] byJsBody = new byte[byJoinSplit.GetListLength()];
-            for (int index = 0; index < byJoinSplit.Count; index++)
-            {
-                Buffer.BlockCopy(byJoinSplit[index], 0, byJsBody, dstOffset, byJoinSplit[index].Length);
-                dstOffset += byJoinSplit[index].Length;
-            }
-
-            UInt256 jsHash = new UInt256(Crypto.Default.Hash256(byJsBody));
-            */
 
             if (!Sodium.PublicKeyAuth.VerifyDetached(joinSplitSig, JsHash.ToArray(), joinSplitPubKey.ToArray()))
             {

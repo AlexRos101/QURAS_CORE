@@ -305,8 +305,9 @@ namespace Pure.Core
             if (results_destroy.Length > 1) return false;
             if (results_destroy.Length == 1 && results_destroy[0].AssetId != Blockchain.UtilityToken.Hash)
                 return false;
-            if (SystemFee + assetFee > Fixed8.Zero && (results_destroy.Length == 0 || results_destroy[0].Amount < SystemFee/* + assetFee*/))
+            if (SystemFee + assetFee > Fixed8.Zero && (results_destroy.Length == 0 || results_destroy[0].Amount < SystemFee))
                 return false;
+            
             TransactionResult[] results_issue = results.Where(p => p.Amount < Fixed8.Zero).ToArray();
             switch (Type)
             {
@@ -327,6 +328,7 @@ namespace Pure.Core
                         return false;
                     break;
             }
+            
             if (Attributes.Count(p => p.Usage == TransactionAttributeUsage.ECDH02 || p.Usage == TransactionAttributeUsage.ECDH03) > 1)
                 return false;
             return this.VerifyScripts();

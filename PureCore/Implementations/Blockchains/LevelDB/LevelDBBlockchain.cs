@@ -446,14 +446,14 @@ namespace Pure.Implementations.Blockchains.LevelDB
 
         public override bool IsDoubleSpend(Transaction tx)
         {
-            if (tx.Inputs.Length == 0) return false;
+            if (tx.Inputs.Length == 0) return false; 
             ReadOptions options = new ReadOptions();
             using (options.Snapshot = db.GetSnapshot())
             {
                 foreach (var group in tx.Inputs.GroupBy(p => p.PrevHash))
                 {
                     UnspentCoinState state = db.TryGet<UnspentCoinState>(options, DataEntryPrefix.ST_Coin, group.Key);
-                    if (state == null) return true;
+                    if (state == null) return true; 
                     if (group.Any(p => p.PrevIndex >= state.Items.Length || state.Items[p.PrevIndex].HasFlag(CoinState.Spent)))
                         return true;
                 }

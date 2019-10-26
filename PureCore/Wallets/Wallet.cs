@@ -1399,13 +1399,6 @@ namespace Pure.Wallets
         {
             if (tx.Outputs == null) tx.Outputs = new TransactionOutput[0];
             if (tx.Attributes == null) tx.Attributes = new TransactionAttribute[0];
-            //fee += tx.SystemFee;
-
-            /*foreach (var group in tx.Outputs.GroupBy(p => p.AssetId))
-            {
-                AssetState asset = Blockchain.Default.GetAssetState(group.Key);
-                fee += asset.Fee;
-            }*/
 
             foreach (TransactionOutput output in tx.Outputs)
             {
@@ -1726,29 +1719,13 @@ namespace Pure.Wallets
 
             if (tx.Outputs == null) tx.Outputs = new TransactionOutput[0];
             if (tx.Attributes == null) tx.Attributes = new TransactionAttribute[0];
-            // fee += tx.FromASysFee;
-
-            //Fixed8 qrsAssetFee = Fixed8.Zero;
+            
             Fixed8 qrgAssetFee = Fixed8.Zero;
             foreach (var txOut in info.vjsout.GroupBy(p => p.AssetID))
             {
                 AssetState asset = Blockchain.Default.GetAssetState(txOut.Key);
-
-                /*if (asset.AssetId == Blockchain.GoverningToken.Hash)
-                {
-                    qrsAssetFee += asset.AFee;
-                }
-                else
-                {
-                    qrgAssetFee += asset.AFee;
-                }*/
                 qrgAssetFee += asset.AFee;
             }
-
-            /*if (!info.vjsout.Select(p => p.AssetID).Contains(Blockchain.UtilityToken.Hash))
-            {
-                qrgAssetFee += Blockchain.UtilityToken.A_Fee;
-            }*/
             
             var pay_total = (typeof(T) == typeof(IssueTransaction) ? new JSOutput[0] : info.vjsout.ToArray()).GroupBy(p => p.AssetID, (k, g) => new
             {
@@ -1758,65 +1735,6 @@ namespace Pure.Wallets
 
             if (fromAddrVersion == Wallet.AnonymouseAddressVersion)
             {
-                /*if (fee > Fixed8.Zero || qrsAssetFee > Fixed8.Zero || qrgAssetFee > Fixed8.Zero)
-                {
-                    if (pay_total.ContainsKey(Blockchain.GoverningToken.Hash))
-                    {
-                        if (qrgAssetFee == Fixed8.Zero)
-                        {
-                            pay_total[Blockchain.GoverningToken.Hash] = new
-                            {
-                                AssetId = Blockchain.GoverningToken.Hash,
-                                Value = pay_total[Blockchain.GoverningToken.Hash].Value + qrsAssetFee
-                            };
-                        }
-                        else
-                        {
-                            pay_total[Blockchain.GoverningToken.Hash] = new
-                            {
-                                AssetId = Blockchain.UtilityToken.Hash,
-                                Value = pay_total[Blockchain.GoverningToken.Hash].Value + qrsAssetFee
-                            };
-
-                            if (pay_total.ContainsKey(Blockchain.UtilityToken.Hash))
-                            {
-                                pay_total[Blockchain.UtilityToken.Hash] = new
-                                {
-                                    AssetId = Blockchain.UtilityToken.Hash,
-                                    Value = pay_total[Blockchain.UtilityToken.Hash].Value + qrgAssetFee + fee
-                                };
-                            }
-                            else
-                            {
-                                pay_total.Add(Blockchain.UtilityToken.Hash, new
-                                {
-                                    AssetId = Blockchain.UtilityToken.Hash,
-                                    Value = fee + qrgAssetFee
-                                });
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (pay_total.ContainsKey(Blockchain.UtilityToken.Hash))
-                        {
-                            pay_total[Blockchain.UtilityToken.Hash] = new
-                            {
-                                AssetId = Blockchain.UtilityToken.Hash,
-                                Value = pay_total[Blockchain.UtilityToken.Hash].Value + qrgAssetFee + fee
-                            };
-                        }
-                        else
-                        {
-                            pay_total.Add(Blockchain.UtilityToken.Hash, new
-                            {
-                                AssetId = Blockchain.UtilityToken.Hash,
-                                Value = fee + qrgAssetFee
-                            });
-                        }
-                    }
-                }*/
-
                 if (fee > Fixed8.Zero || qrgAssetFee > Fixed8.Zero)
                 {
                     if (pay_total.ContainsKey(Blockchain.UtilityToken.Hash))
@@ -1897,7 +1815,7 @@ namespace Pure.Wallets
                 info.vjsout = outputs_new;
             }
 
-            if (qrgAssetFee < tx.SystemFee/* || qrsAssetFee < tx.QrsSystemFee*/) return null;
+            if (qrgAssetFee < tx.SystemFee) return null;
             return tx;
         }
 
@@ -1910,93 +1828,19 @@ namespace Pure.Wallets
             {
                 if (tx.Outputs == null) tx.Outputs = new TransactionOutput[0];
                 if (tx.Attributes == null) tx.Attributes = new TransactionAttribute[0];
-                //fee += tx.SystemFee;
 
-                //Fixed8 qrsAssetFee = Fixed8.Zero;
                 Fixed8 qrgAssetFee = Fixed8.Zero;
                 foreach (var txOut in tx.Outputs.GroupBy(p => p.AssetId))
                 {
                     AssetState asset = Blockchain.Default.GetAssetState(txOut.Key);
-
-                    /*if (asset.AssetId == Blockchain.GoverningToken.Hash)
-                    {
-                        qrsAssetFee += asset.AFee;
-                    }
-                    else
-                    {*/
-                        qrgAssetFee += asset.AFee;
-                    //}
+                    qrgAssetFee += asset.AFee;
                 }
-
-                /*if (!tx.Outputs.Select(p=> p.AssetId).Contains(Blockchain.UtilityToken.Hash))
-                {
-                    qrgAssetFee += Blockchain.UtilityToken.A_Fee;
-                }*/
 
                 var pay_total = (typeof(T) == typeof(IssueTransaction) ? new TransactionOutput[0] : tx.Outputs).GroupBy(p => p.AssetId, (k, g) => new
                 {
                     AssetId = k,
                     Value = g.Sum(p => p.Value)
                 }).ToDictionary(p => p.AssetId);
-
-                /*if (fee > Fixed8.Zero || qrsAssetFee > Fixed8.Zero || qrgAssetFee > Fixed8.Zero)
-                {
-                    if (pay_total.ContainsKey(Blockchain.GoverningToken.Hash))
-                    {
-                        if (qrgAssetFee == Fixed8.Zero)
-                        {
-                            pay_total[Blockchain.GoverningToken.Hash] = new
-                            {
-                                AssetId = Blockchain.GoverningToken.Hash,
-                                Value = pay_total[Blockchain.GoverningToken.Hash].Value + qrsAssetFee
-                            };
-                        }
-                        else
-                        {
-                            pay_total[Blockchain.GoverningToken.Hash] = new
-                            {
-                                AssetId = Blockchain.UtilityToken.Hash,
-                                Value = pay_total[Blockchain.GoverningToken.Hash].Value + qrsAssetFee
-                            };
-
-                            if (pay_total.ContainsKey(Blockchain.UtilityToken.Hash))
-                            {
-                                pay_total[Blockchain.UtilityToken.Hash] = new
-                                {
-                                    AssetId = Blockchain.UtilityToken.Hash,
-                                    Value = pay_total[Blockchain.UtilityToken.Hash].Value + qrgAssetFee + fee
-                                };
-                            }
-                            else
-                            {
-                                pay_total.Add(Blockchain.UtilityToken.Hash, new
-                                {
-                                    AssetId = Blockchain.UtilityToken.Hash,
-                                    Value = fee + qrgAssetFee
-                                });
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (pay_total.ContainsKey(Blockchain.UtilityToken.Hash))
-                        {
-                            pay_total[Blockchain.UtilityToken.Hash] = new
-                            {
-                                AssetId = Blockchain.UtilityToken.Hash,
-                                Value = pay_total[Blockchain.UtilityToken.Hash].Value + qrgAssetFee + fee
-                            };
-                        }
-                        else
-                        {
-                            pay_total.Add(Blockchain.UtilityToken.Hash, new
-                            {
-                                AssetId = Blockchain.UtilityToken.Hash,
-                                Value = fee + qrgAssetFee
-                            });
-                        }
-                    }
-                }*/
 
                 if (fee > Fixed8.Zero || qrgAssetFee > Fixed8.Zero)
                 {
@@ -2078,7 +1922,7 @@ namespace Pure.Wallets
                 info.vjsin = input_new;
                 info.vjsout = outputs_new;
 
-                if (qrgAssetFee < tx.SystemFee/* || qrsAssetFee < tx.QrsSystemFee*/) return null;
+                if (qrgAssetFee < tx.SystemFee) return null;
             }
             return tx;
         }
@@ -2377,7 +2221,7 @@ namespace Pure.Wallets
                                                         Value = amount,
                                                         PubKey = rtx.RingCTSig[i].outPK[j].dest,
                                                         ScriptHash = Contract.CreateRingSignatureRedeemScript(rctKey.PayloadPubKey, rctKey.ViewPubKey).ToScriptHash()
-                                                    };// (rtx.RingCTSig[i].AssetID, amount, rtx.RingCTSig[i].outPK[j].dest);
+                                                    };
 
                                                     int k = -1;
 
@@ -2415,25 +2259,6 @@ namespace Pure.Wallets
                                                         Output = output,
                                                         State = CoinState.Confirmed
                                                     });
-
-
-
-
-
-                                                    /*if (rtx.RingCTSig[i].mixRing.Count > 1)
-                                                        foreach (RCTCoin coins in rctcoins)
-                                                        {
-                                                            if (coins.Reference.PrevHash == rtx.RingCTSig[i].mixRing[1][0].txHash)
-                                                            {
-                                                                reference = coins.Reference;
-                                                                is_rtc_contains = true; break;
-                                                            }
-                                                        }*/
-
-                                                    /*if (is_rtc_contains == true)
-                                                    {
-                                                        rctcoins[reference].State |= CoinState.Spent;
-                                                    }*/
                                                 }
                                             }
                                         }
@@ -2967,7 +2792,7 @@ namespace Pure.Wallets
                                                     Value = amount,
                                                     PubKey = rtx.RingCTSig[i].outPK[j].dest,
                                                     ScriptHash = Contract.CreateRingSignatureRedeemScript(rctKey.PayloadPubKey, rctKey.ViewPubKey).ToScriptHash()
-                                                };// (rtx.RingCTSig[i].AssetID, amount, rtx.RingCTSig[i].outPK[j].dest);
+                                                };
 
                                                 
                                                 for (int k = 0; k < rtx.RingCTSig[i].mixRing.Count; k ++)

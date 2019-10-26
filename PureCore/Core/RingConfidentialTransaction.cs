@@ -227,11 +227,6 @@ namespace Pure.Core
                             }
                         }
 
-/*                        if (QrsSystemFee > Fixed8.Zero)
-                        {
-                            amount[Blockchain.GoverningToken.Hash] += Fixed8.Zero;
-                        }*/
-
                         if (SystemFee > Fixed8.Zero)
                         {
                             amount[Blockchain.UtilityToken.Hash] += Blockchain.UtilityToken.A_Fee;
