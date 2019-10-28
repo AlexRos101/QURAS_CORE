@@ -143,7 +143,8 @@ namespace Quras_gui_wpf.Utils
             dic_en.Add("STR_SP_SEND", "Send");
             dic_en.Add("STR_SP_RECEIVE_ADDRESS", "Receiving address");
             dic_en.Add("STR_SP_AMOUNT", "Amount");
-
+            
+            dic_en.Add("STR_SP_ERR_SELF_TRANSFER", "Self transfer is not able.");
             dic_en.Add("STR_SP_ERR_INCORRECT_AMOUNT", "The balance is not sufficient.");
             dic_en.Add("STR_SP_ERR_INPUT_AMOUNT", "Input the amount field.");
             dic_en.Add("STR_SP_ERR_INCORRECT_RECEIVE_ADDRESS", "Input the receive address field");
@@ -471,6 +472,7 @@ namespace Quras_gui_wpf.Utils
             dic_jp.Add("STR_SP_AMOUNT", "金額");
             dic_jp.Add("STR_RP_ERR_INPUT_FEE_IN_LIMIT", "手数料を範囲内で入力してください。");
 
+            dic_jp.Add("STR_SP_ERR_SELF_TRANSFER", "セルフ転送ができない。");
             dic_jp.Add("STR_SP_ERR_INCORRECT_AMOUNT", "残高が不足です。");
             dic_jp.Add("STR_SP_ERR_INPUT_AMOUNT", "金額を入力しなかったです。");
             dic_jp.Add("STR_SP_ERR_INCORRECT_RECEIVE_ADDRESS", "送金先をご入力してください。");

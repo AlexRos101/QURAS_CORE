@@ -149,6 +149,11 @@ namespace Quras_gui_wpf.Pages
                 balance += ((AssetTypeItem)((ComboBoxItem)cmbAssetType.SelectedItem).Tag).Value;
                 fromAddress = contract.Address;
             }
+
+            if (fromAddress == txbReceiveAddress.Text)
+            {
+                return "STR_SP_ERR_SELF_TRANSFER";
+            }
             
             try
             {
