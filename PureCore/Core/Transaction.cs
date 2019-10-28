@@ -256,6 +256,28 @@ namespace Pure.Core
 
         public virtual bool Verify(IEnumerable<Transaction> mempool)
         {
+            if (Type == TransactionType.ContractTransaction)
+            {
+                UInt160 toAddress = Outputs[0].ScriptHash;
+                bool isSelf = true;
+                for (int i = 1; i < Outputs.Length; i++)
+                {
+                    if (toAddress != Outputs[i].ScriptHash)
+                    {
+                        isSelf = false;
+                        break;
+                    }
+                }
+
+                if (isSelf)
+                {
+                    if (toAddress == References[Inputs[0]].ScriptHash)
+                    {
+                        return false;
+                    }
+                }
+            }
+
             for (int i = 1; i < Inputs.Length; i++)
                 for (int j = 0; j < i; j++)
                     if (Inputs[i].PrevHash == Inputs[j].PrevHash && Inputs[i].PrevIndex == Inputs[j].PrevIndex)

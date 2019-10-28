@@ -268,6 +268,22 @@ namespace Quras_gui_wpf.Pages
 
             try
             {
+                if (Double.Parse(TxbAssetAFee.Text) < 0)
+                {
+                    bdAssetAFee.BorderBrush = new SolidColorBrush(Colors.Red);
+                    fHAssetAFee.Foreground = new SolidColorBrush(Colors.Red);
+                    ret = "STR_ERR_ASSET_AFEE_FIELD";
+                }
+            }
+            catch (Exception)
+            {
+                bdAssetAFee.BorderBrush = new SolidColorBrush(Colors.Red);
+                fHAssetAFee.Foreground = new SolidColorBrush(Colors.Red);
+                ret = "STR_ERR_ASSET_AFEE_FIELD";
+            }
+
+            try
+            {
                 if (Double.Parse(TxbAssetTFeeMin.Text) < 0)
                 {
                     bdAssetTFeeMin.BorderBrush = new SolidColorBrush(Colors.Red);
