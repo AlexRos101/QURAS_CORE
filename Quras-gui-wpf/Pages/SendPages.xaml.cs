@@ -172,7 +172,7 @@ namespace Quras_gui_wpf.Pages
                 }
                 else if (cmbAssetType.Text == "XQC")
                 {
-                    amount = long.Parse(txbAmount.Text);
+                    amount = double.Parse(txbAmount.Text);
                 }
                 else
                 {

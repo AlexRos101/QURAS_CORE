@@ -20,8 +20,6 @@
                     <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
                 <ComboBox x:Name="cmbAssets" Grid.Column="0" Height="25" Width="60" VerticalAlignment="Center" Margin="0,0,0,0">
-                    <ComboBoxItem Tag="QRS" IsSelected="True">XQC</ComboBoxItem>
-                    <ComboBoxItem Tag="QRG">XQG</ComboBoxItem>
                 </ComboBox>
                 <TextBox Grid.Column="1" BorderThickness="0" Width="100" Height="30" Margin="0,0,0,0" Tag="Amount" HorizontalAlignment="Center" Style="{StaticResource QurasTextBoxStyle}" x:Name="txbAmount" VerticalAlignment="Center" />
                 <Button Grid.Column="2" x:Name="btnGenerate" Style="{StaticResource QurasSendPageButtonStyle}" Cursor="Hand" Content="Generate" Opacity="1" Width="100" Height="25" Margin="0,0,0,0" FontWeight="Bold" Click="btnGenerate_Click"/>

@@ -450,6 +450,7 @@ namespace Quras_gui_wpf.Windows
             if (AssetsManager.GetInstance().AddAssets(asset.AssetId, asset.GetName()))
             {
                 sendPage.AddAsset(asset.AssetId, asset.GetName(), value);
+                receivePage.AddAsset(asset.AssetId, asset.GetName(), value);
             }
             else
             {

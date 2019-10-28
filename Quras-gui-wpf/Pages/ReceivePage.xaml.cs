@@ -60,7 +60,11 @@ namespace Quras_gui_wpf.Pages
                 }
                 else if (cmbAssets.Text == "XQC")
                 {
-                    amount = long.Parse(txbAmount.Text);
+                    amount = double.Parse(txbAmount.Text);
+                }
+                else
+                {
+                    amount = double.Parse(txbAmount.Text);
                 }
             }
             catch
@@ -132,6 +136,26 @@ namespace Quras_gui_wpf.Pages
 
             pic_qr_code.Image = result;
             */
+        }
+
+        public void AddAsset(UInt256 assetId, string assetName, Fixed8 value)
+        {
+            ComboBoxItem item = new ComboBoxItem();
+
+            AssetTypeItem tagItem = new AssetTypeItem(assetId, assetName, value);
+
+            item.Tag = tagItem;
+            item.Content = assetName;
+
+            if (!cmbAssets.Items.Contains(item))
+            {
+                cmbAssets.Items.Add(item);
+            }
+
+            if (cmbAssets.SelectedItem == null)
+            {
+                cmbAssets.SelectedIndex = 0;
+            }
         }
     }
 }
