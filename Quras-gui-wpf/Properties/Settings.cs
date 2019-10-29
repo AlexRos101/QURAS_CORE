@@ -13,6 +13,7 @@ namespace Quras_gui_wpf.Properties
         public ushort WsPort { get; }
         public BrowserSettings Urls { get; }
         public ContractSettings Contracts { get; }
+        public string ApiPrefix { get; set; }
 
         // Anonymouse config
         public string PkKeyPath { get; }
@@ -49,6 +50,7 @@ namespace Quras_gui_wpf.Properties
             this.WsPort = ushort.Parse(section.GetSection("WsPort").Value);
             this.Urls = new BrowserSettings(section.GetSection("Urls"));
             this.Contracts = new ContractSettings(section.GetSection("Contracts"));
+            this.ApiPrefix = section.GetSection("ApiPrefix").Value;
 
             IConfigurationSection AnonymousSection = new ConfigurationBuilder().AddJsonFile("config.json").Build().GetSection("AnonymousModule");
 

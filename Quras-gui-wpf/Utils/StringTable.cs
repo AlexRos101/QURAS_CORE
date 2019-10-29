@@ -320,6 +320,7 @@ namespace Quras_gui_wpf.Utils
             dic_en.Add("STR_AAP_ASSET_ID", "Asset ID");
 
             dic_en.Add("STR_ERR_AAP_FIELD", "Please input fields painted red as correct!");
+            dic_en.Add("STR_ERR_DUPLICATED_TOKEN", "This named token is already exist in blockchain.");
             dic_en.Add("STR_SUC_TEST_TRANSACTION", "Successfully finished building transaction.");
             dic_en.Add("STR_ERR_TEST_TRANSACTION", "Failed on building transaction.");
             dic_en.Add("STR_INV_NOT_FOUND_CONTRACT", "Not found smart contract");
@@ -645,10 +646,10 @@ namespace Quras_gui_wpf.Utils
             dic_jp.Add("STR_AAP_ASSET_ID", "資産ID");
 
             dic_jp.Add("STR_ERR_AAP_FIELD", "赤く塗られている欄を正しく入力してください。");
+            dic_jp.Add("STR_ERR_DUPLICATED_TOKEN", "この名前付きトークンは,すでにブロックチェーンに存在します。");
             dic_jp.Add("STR_SUC_TEST_TRANSACTION", "構築トランザクションを正常に終了しました。");
             dic_jp.Add("STR_ERR_TEST_TRANSACTION", "トランザクションの構築に失敗しました。");
             dic_jp.Add("STR_INV_NOT_FOUND_CONTRACT", "スマート契約が見つかりません");
-
 
             dic_jp.Add("STR_ERR_NOT_FOUND_ASSET", "アセットIDが見つかりません。");
             dic_jp.Add("STR_FOUND_ASSET", "登録されている資産が見つかりました。");

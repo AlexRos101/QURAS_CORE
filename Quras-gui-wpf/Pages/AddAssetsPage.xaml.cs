@@ -24,6 +24,9 @@ using Pure.Cryptography.ECC;
 using Quras_gui_wpf.Global;
 using Quras_gui_wpf.Utils;
 using Quras_gui_wpf.Dialogs;
+using System.Net;
+using System.Web.Script.Serialization;
+using Quras_gui_wpf.Properties;
 
 namespace Quras_gui_wpf.Pages
 {
@@ -217,6 +220,24 @@ namespace Quras_gui_wpf.Pages
             fHAssetOwner.Foreground = new SolidColorBrush(Colors.Green);
             fHAssetPrecision.Foreground = new SolidColorBrush(Colors.Green);
             fHAssetType.Foreground = new SolidColorBrush(Colors.Green);
+        }
+
+        public bool isDuplicatedToken(string assetName)
+        {
+            var wb = new WebClient();
+
+            var response = wb.DownloadString(SettingsConfig.instance.ApiPrefix + "/v1/assets/all");
+
+            var model = new JavaScriptSerializer().Deserialize<HttpAssetInfo>(response);
+
+            foreach (var asset in model.assets)
+            {
+                if (asset.name == assetName)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public string CheckFields()
@@ -496,7 +517,13 @@ namespace Quras_gui_wpf.Pages
                 StaticUtils.ShowMessageBox(StaticUtils.ErrorBrush, StringTable.GetInstance().GetString("STR_ERR_AAP_FIELD", iLang));
                 return;
             }
-            
+
+            if (isDuplicatedToken(TxbAssetName.Text))
+            {
+                StaticUtils.ShowMessageBox(StaticUtils.ErrorBrush, StringTable.GetInstance().GetString("STR_ERR_DUPLICATED_TOKEN", iLang));
+                return;
+            }
+
             MakeAndTestTransaction();
         }
 
