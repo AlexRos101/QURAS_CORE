@@ -259,7 +259,7 @@
                                                     Asset fee address
                                                 </TextBlock>
                                                 <TextBlock x:Name="fCAssetFeeAddress" Margin="15,0,5,5" Grid.Row="1" FontSize="12" Foreground="{StaticResource colorbrushDark}" TextAlignment="Left" FontWeight="Normal" FontFamily="SF Pro Display">
-                                                    Please input an address that you receive asset fee.
+                                                    Please input a transparent address that you receive asset fee.
                                                 </TextBlock>
                                             </StackPanel>
                                         </Grid>

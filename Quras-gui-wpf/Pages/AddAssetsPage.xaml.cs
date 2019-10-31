@@ -269,7 +269,6 @@ namespace Quras_gui_wpf.Pages
                 fHAssetAmount.Foreground = new SolidColorBrush(Colors.Red);
                 ret = "STR_ERR_ASSET_AMOUNT_FIELD";
             }
-            
 
             try
             {
@@ -335,7 +334,20 @@ namespace Quras_gui_wpf.Pages
                 ret = "STR_ERR_ASSET_TFEE_MAX_FIELD";
             }
 
-            if (Double.Parse(TxbAssetTFeeMax.Text) < Double.Parse(TxbAssetTFeeMin.Text))
+            try
+            {
+                if (Double.Parse(TxbAssetTFeeMax.Text) < Double.Parse(TxbAssetTFeeMin.Text))
+                {
+                    bdAssetTFeeMin.BorderBrush = new SolidColorBrush(Colors.Red);
+                    fHAssetTFeeMin.Foreground = new SolidColorBrush(Colors.Red);
+
+                    bdAssetTFeeMax.BorderBrush = new SolidColorBrush(Colors.Red);
+                    fHAssetTFeeMax.Foreground = new SolidColorBrush(Colors.Red);
+
+                    ret = "STR_ERR_ASSET_TFEE_FIELD";
+                }
+            }
+            catch
             {
                 bdAssetTFeeMin.BorderBrush = new SolidColorBrush(Colors.Red);
                 fHAssetTFeeMin.Foreground = new SolidColorBrush(Colors.Red);
@@ -344,6 +356,14 @@ namespace Quras_gui_wpf.Pages
                 fHAssetTFeeMax.Foreground = new SolidColorBrush(Colors.Red);
 
                 ret = "STR_ERR_ASSET_TFEE_FIELD";
+            }
+            
+
+            if (Wallet.GetAddressVersion(TxbAssetFeeAddress.Text) != Wallet.AddressVersion)
+            {
+                bdAssetFeeAddress.BorderBrush = new SolidColorBrush(Colors.Red);
+                fHAssetFeeAddress.Foreground = new SolidColorBrush(Colors.Red);
+                ret = "STR_ERR_ASSET_FEE_ADDRESS_FIELD";
             }
 
             try

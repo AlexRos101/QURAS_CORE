@@ -305,7 +305,7 @@ namespace Quras_gui_wpf.Utils
             dic_en.Add("STR_AAP_FH_ASSET_TFEE_MAX", "Asset fee max value for transparent users");
             dic_en.Add("STR_AAP_FC_ASSET_TFEE_MAX", "Please input a fee max value that will be paied by transparent account users.");
             dic_en.Add("STR_AAP_FH_ASSET_FEE_ADDRESS", "Asset Fee Address");
-            dic_en.Add("STR_AAP_FC_ASSET_FEE_ADDRESS", "Please input an address that will be received asset fee");
+            dic_en.Add("STR_AAP_FC_ASSET_FEE_ADDRESS", "Please input a transparent address that will be received asset fee");
             dic_en.Add("STR_AAP_FH_ASSET_OWNER", "Asset Owner");
             dic_en.Add("STR_AAP_FC_ASSET_OWNER", "Please input your public key, the token owner.");
             dic_en.Add("STR_AAP_FH_ASSET_ADMIN", "Asset Admin");
@@ -632,7 +632,7 @@ namespace Quras_gui_wpf.Utils
             dic_jp.Add("STR_AAP_FC_ASSET_TFEE_MIN", "透過的なアカウントの利用者が入力する料金最小値を入力してください。");
             dic_jp.Add("STR_AAP_FC_ASSET_TFEE_MAX", "透過的なアカウントの利用者が入力する料金最大値を入力してください");
             dic_jp.Add("STR_AAP_FH_ASSET_FEE_ADDRESS", "資産手数料アドレス");
-            dic_jp.Add("STR_AAP_FC_ASSET_FEE_ADDRESS", "資産手数料を受け取る住所を入力してください");
+            dic_jp.Add("STR_AAP_FC_ASSET_FEE_ADDRESS", "資産使用料を受け取る透明アドレスを入力してください");
             dic_jp.Add("STR_AAP_FH_ASSET_OWNER", "資産所有者");
             dic_jp.Add("STR_AAP_FC_ASSET_OWNER", "あなたの公開鍵、トークンの所有者を入力してください。");
             dic_jp.Add("STR_AAP_FH_ASSET_ADMIN", "資産管理者");
