@@ -48,7 +48,7 @@ namespace Pure.Core
             AssetType = AssetType.UtilityToken,
             Name = "[{\"lang\":\"en\",\"name\":\"XQG\"}]",
             //Amount = Fixed8.FromDecimal(GenerationAmount.Sum(p => p) * DecrementInterval),
-            Amount = Fixed8.FromDecimal(88888888),
+            Amount = Fixed8.FromDecimal(888888888),
             Precision = 8,
             Owner = ECCurve.Secp256r1.Infinity,
             Admin = (new[] { (byte)OpCode.PUSHF }).ToScriptHash(),

@@ -5,6 +5,7 @@
         "NodePort": 10039,
 	"WsPort": 10033,
         "UriPrefix": [ "http://13.230.62.42:10030" ],
+	"ApiPrefix": "https://blockapi.quraswallet.org:9009",
         "SslCert": "",
         "SslCertPassword": "",
         "Urls": {

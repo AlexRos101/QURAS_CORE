@@ -83,7 +83,7 @@ namespace Quras_gui_wpf.Utils
             dic_en.Add("STR_SPLASH_CHECKED_VERSION", "The newest version is '{0}'.");
 
             // Welcome Page
-            dic_en.Add("STR_WP_COMMENT_HEADER", "WELECOME TO QURAS WALLET");
+            dic_en.Add("STR_WP_COMMENT_HEADER", "WELCOME TO QURAS WALLET");
             dic_en.Add("STR_WP_COMMENT_BODY", "PRIVACY PROTECTING SMART CONTRACT PLATFORM" + System.Environment.NewLine + "WITH TRANSACTION FEE SHARING FEATURE");
             dic_en.Add("STR_WP_NEW_WALLET", "New Wallet");
             dic_en.Add("STR_WP_RESTORE", "Restore");
@@ -115,7 +115,7 @@ namespace Quras_gui_wpf.Utils
             dic_en.Add("STR_RW_ERR_UNKNOWN", "Unknown Error!");
 
             // History Page
-            dic_en.Add("STR_HP_TITLE", "TRANSACTION HISOTRY");
+            dic_en.Add("STR_HP_TITLE", "TRANSACTION HISTORY");
 
             // MainWalletWindow Page
             dic_en.Add("STR_MW_HEIGHT", "Height");
