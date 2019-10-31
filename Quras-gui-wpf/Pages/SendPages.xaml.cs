@@ -203,6 +203,12 @@ namespace Quras_gui_wpf.Pages
                 }
             }
 
+            if (Wallet.GetAddressVersion(fromAddress) == Wallet.AnonymouseAddressVersion && Wallet.GetAddressVersion(txbReceiveAddress.Text) == Wallet.StealthAddressVersion ||
+                Wallet.GetAddressVersion(fromAddress) == Wallet.StealthAddressVersion && Wallet.GetAddressVersion(txbReceiveAddress.Text) == Wallet.AnonymouseAddressVersion)
+            {
+                return "STR_ERR_ANONYMOUSE_STEALTH";
+            }
+
             return "STR_SP_SUCCESS";
         }
 

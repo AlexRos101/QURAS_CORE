@@ -154,6 +154,7 @@ namespace Quras_gui_wpf.Utils
             dic_en.Add("STR_SP_SEDDING_FAILED", "Please wait till finishing the pending tx.");
 
             dic_en.Add("STR_SP_ERR_NOT_LOADED_ZK_SNARKS_KEY", "You didn't load ZK-SNARKS Keys.");
+            dic_en.Add("STR_ERR_ANONYMOUSE_STEALTH", "Transfering between anonymouse and stealth wallets is not available.");
 
             // Setting Page
             dic_en.Add("STR_SETTINGS_TITLE", "SETTINGS");
@@ -483,6 +484,7 @@ namespace Quras_gui_wpf.Utils
             dic_jp.Add("STR_SP_SEDDING_FAILED", "保留中のTXを終えるまで待ってください。");
 
             dic_jp.Add("STR_SP_ERR_NOT_LOADED_ZK_SNARKS_KEY", "ZK-SNARKSキーをロードしていません。");
+            dic_jp.Add("STR_ERR_ANONYMOUSE_STEALTH", "匿名とステルスの間での譲渡はできません。");
 
             // Setting Page
             dic_jp.Add("STR_SETTINGS_TITLE", "設定");
