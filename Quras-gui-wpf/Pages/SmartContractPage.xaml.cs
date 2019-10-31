@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 
 using Quras_gui_wpf.Utils;
 using Quras_gui_wpf.Global;
+using Pure.Wallets;
+using Pure;
 
 namespace Quras_gui_wpf.Pages
 {
@@ -181,6 +183,11 @@ namespace Quras_gui_wpf.Pages
 
             pageStatus = SmartContractPageStatus.AddAsset;
             ShowPages(pageStatus);
+        }
+
+        public void hideAddAssetBtn()
+        {
+            btnAddAssets.Visibility = Visibility.Hidden;
         }
     }
 }

@@ -285,6 +285,7 @@ namespace Quras_gui_wpf.Utils
             dic_en.Add("STR_ERR_TX_INSUFFICIENTFUND", "Insufficient funds.");
 
             // ADD ASSET PAGE
+            dic_en.Add("STR_ERR_ADD_ASSET_IN_CYPT", "Can't add or issue assets with anonymouse or stealth wallet.");
             dic_en.Add("STR_AAP_COMMENT", "You can launch your own asset on blockchain.");
             dic_en.Add("STR_AAP_TITLE", "Add asset");
             dic_en.Add("STR_AAP_REG_ASSET_TITLE", "Register Asset");
@@ -612,6 +613,7 @@ namespace Quras_gui_wpf.Utils
             dic_jp.Add("STR_ERR_TX_INSUFFICIENTFUND", "残高不足。");
 
             // ADD ASSET PAGE
+            dic_jp.Add("STR_ERR_ADD_ASSET_IN_CYPT", "匿名またはステルスウォレットで資産を追加または発行することはできません。");
             dic_jp.Add("STR_AAP_COMMENT", "あなたはブロックチェーンであなた自身の資産を起動することができます。");
             dic_jp.Add("STR_AAP_TITLE", "資産を追加");
             dic_jp.Add("STR_AAP_REG_ASSET_TITLE", "資産を登録する");

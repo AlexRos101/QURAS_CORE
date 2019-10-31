@@ -355,6 +355,22 @@ namespace Quras_gui_wpf.Windows
             balance_changed = true;
             check_nep5_balance = true;
 
+            if (Constant.CurrentWallet != null)
+            {
+                string fromAddr = "";
+
+                foreach (UInt160 scriptHash in Constant.CurrentWallet.GetAddresses().ToArray())
+                {
+                    VerificationContract contract = Constant.CurrentWallet.GetContract(scriptHash);
+                    fromAddr = contract.Address;
+                }
+
+                if (Wallet.GetAddressVersion(fromAddr) != Wallet.AddressVersion)
+                {
+                    smartContractPage.hideAddAssetBtn();
+                }
+            }
+
             DrawQRCode();
         }
 
