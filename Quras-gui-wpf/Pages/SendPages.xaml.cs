@@ -142,6 +142,15 @@ namespace Quras_gui_wpf.Pages
                 }
             }
 
+            if (assetState.AssetType == AssetType.AnonymousToken)
+            {
+                if (Wallet.GetAddressVersion(fromAddress) == Wallet.StealthAddressVersion ||
+                Wallet.GetAddressVersion(txbReceiveAddress.Text) == Wallet.StealthAddressVersion)
+                {
+                    return "STR_SP_ERR_ANONYMOUSE_TOKEN";
+                }
+            }
+
             Fixed8 balance = Fixed8.Zero;
             foreach (UInt160 scriptHash in Constant.CurrentWallet.GetAddresses().ToArray())
             {

@@ -397,6 +397,7 @@ namespace Quras_gui_wpf.Utils
             dic_en.Add("STR_WALLET_DUPPLICATION_ERROR", "Wallet is already running.");
 
             dic_en.Add("STR_SP_ERR_TRANSPARENT_TOKEN", "Address types must be transparent type.");
+            dic_en.Add("STR_SP_ERR_ANONYMOUSE_TOKEN", "Address types must be anonymouse type.");
 
             dic_en.Add("STR_ADD_ASSET_DEPLOY", "Would you like to deploy token?");
             dic_en.Add("STR_ISSUE_ASSET_QUESTION", "Would you like to issue tokens?");
@@ -721,6 +722,7 @@ namespace Quras_gui_wpf.Utils
             dic_jp.Add("STR_SEND_COIN_ERROR_WAITING", "TX前の仕上げまで待ってください。");
             dic_jp.Add("STR_WALLET_DUPPLICATION_ERROR", "財布はもう走っています。");
             dic_jp.Add("STR_SP_ERR_TRANSPARENT_TOKEN", "アドレス型は透過型でなければなりません。");
+            dic_jp.Add("STR_SP_ERR_ANONYMOUSE_TOKEN", "アドレス タイプは,匿名タイプである必要があります。");
             dic_jp.Add("STR_ADD_ASSET_DEPLOY", "トークンを展開しますか?");
             dic_jp.Add("STR_ISSUE_ASSET_QUESTION", "トークンを発行しますか。");
             dic_jp.Add("STR_FEE_FREE", "無料");
